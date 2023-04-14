@@ -13,7 +13,7 @@ export default function App({
 }: AppProps<{ session: Session }>) {
   return (
       <SessionProvider session={session}>
-        <ThemeProvider>
+        <ThemeProvider attribute="class">
           <Component {...pageProps} />
         </ThemeProvider>
       </SessionProvider>
