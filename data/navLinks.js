@@ -1,6 +1,3 @@
-import styles from "../components/header.module.css";
-import Link from "next/link";
-
 const headerNavLinks = [
     { href: '/', title: 'Home' },
     { href: '/client', title: 'Client' },
