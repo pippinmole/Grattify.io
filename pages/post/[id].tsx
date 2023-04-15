@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage } from 'next';
+import { GetServerSideProps } from 'next';
 import Post, {IPost} from "../../models/post";
 import Layout from "../../components/layout";
 import React from "react";
