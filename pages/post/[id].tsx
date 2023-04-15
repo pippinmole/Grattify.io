@@ -10,7 +10,9 @@ function PostPage({ post }: { post: IPost}) {
         <Layout>
             <h1>{post.content}</h1>
             <p>
-                A post by {post.author}
+                <>
+                    A post by {post.author}
+                </>
             </p>
         </Layout>
     )
