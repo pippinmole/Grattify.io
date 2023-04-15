@@ -2,6 +2,7 @@ import Layout from "../components/layout";
 import Post, {IPost} from "../models/post";
 import {GetServerSideProps} from "next";
 import Link from "next/link";
+import dbConnect from "../lib/mongoose";
 
 export default function DiscoverPage({ posts }: { posts: IPost[]}) {
 
@@ -9,7 +10,6 @@ export default function DiscoverPage({ posts }: { posts: IPost[]}) {
 
     return (
         <Layout>
-
             <h1 className="text-2xl font-medium title-font mb-4 tracking-widest text-center">
                 DISCOVER
             </h1>
@@ -72,9 +72,9 @@ function PostTile({post}: {post: IPost}) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const posts = await Post.find().lean()
+    await dbConnect();
 
-    console.log(posts)
+    const posts = await Post.find().lean()
 
     return {
         props: {

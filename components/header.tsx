@@ -1,10 +1,11 @@
 import Link from "next/link"
 import { signIn, signOut, useSession } from "next-auth/react"
-import styles from "./header.module.css"
 import ThemeSwitch from "./ThemeSwitch";
-import SectionContainer from "./SectionContainer";
 import siteMetadata from '../data/siteMetadata'
 import headerNavLinks from '../data/navLinks'
+import React from "react";
+import {Accordion, Avatar, Dropdown, Navbar} from "flowbite-react";
+import {DefaultUser} from "next-auth";
 
 // The approach used in this component shows how to build a sign in and sign out
 // component that works on pages which support both client and server side
@@ -14,81 +15,64 @@ export default function Header() {
     const loading = status === "loading"
 
     return (
-        <SectionContainer>
-            <header className="flex items-center justify-between py-10">
-                <Link href="/" aria-label={siteMetadata.headerTitle}
-                      className="flex title-font font-medium items-center mb-4 md:mb-0 ml-3 text-xl">
+        <Navbar fluid={false} rounded={true}>
+            <Navbar.Brand href="https://flowbite.com/">
+                <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
                     {siteMetadata.headerTitle}
-                </Link>
+                </span>
+            </Navbar.Brand>
 
-                <div className="flex items-center text-base leading-5">
-                    <div className="hidden sm:block">
-                        {headerNavLinks.map((link) => (
-                            <Link
-                                key={link.title}
-                                href={link.href}
-                                className="p-1 font-medium sm:p-4"
-                                hidden={link.authorize && !session?.user}
-                            >
-                                {link.title}
-                            </Link>
-                        ))}
-                    </div>
+            <div className="flex md:order-2">
+                <ThemeSwitch/>
 
-                    <ThemeSwitch/>
-                </div>
-            </header>
+                <Dropdown
+                    arrowIcon={false}
+                    inline={true}
+                    label={<Avatar alt="User settings"
+                                   img={UserImageOrDefault(session?.user)} rounded={true}/>}
+                >
+                    <Dropdown.Header>
+                        <span className="block text-sm">
+                          {session?.user.name}
+                        </span>
+                        <span className="block truncate text-sm font-medium">
+                          {session?.user.email}
+                        </span>
+                    </Dropdown.Header>
+                    <Dropdown.Item>
+                        Dashboard
+                    </Dropdown.Item>
+                    <Dropdown.Item>
+                        Settings
+                    </Dropdown.Item>
+                    <Dropdown.Item>
+                        Earnings
+                    </Dropdown.Item>
+                    <Dropdown.Divider/>
 
-            <noscript>
-                <style>{`.nojs-show { opacity: 1; top: 0; }`}</style>
-            </noscript>
+                    <Dropdown.Header>
+                        Sign out
+                    </Dropdown.Header>
 
-            <div className={styles.signedInStatus + " pb-5"}>
-                <p
-                    className={`nojs-show ${!session && loading ? styles.loading : styles.loaded}`}>
-                    {!session && (
-                        <>
-              <span className={styles.notSignedInText}>
-                You are not signed in
-              </span>
-                            <Link href={`/api/auth/signin`}
-                                className={styles.buttonPrimary}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    signIn()
-                                }}
-                            >
-                                Sign in
-                            </Link>
-                        </>
-                    )}
-                    {session?.user && (
-                        <>
-                            {session.user.image && (
-                                <span
-                                    style={{backgroundImage: `url('${session.user.image}')`}}
-                                    className={styles.avatar}
-                                />
-                            )}
-                            <span className={styles.signedInText}>
-                <small>Signed in as</small>
-                <br/>
-                <strong>{session.user.email ?? session.user.name}</strong>
-              </span>
-                            <a
-                                href={`/api/auth/signout`}
-                                className={styles.button}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    signOut()
-                                }}
-                            >
-                                Sign out
-                            </a>
-                        </>
-                    )}
-                </p>
+                </Dropdown>
+                <Navbar.Toggle/>
             </div>
-        </SectionContainer>
+
+            <Navbar.Collapse>
+                {headerNavLinks.map((link, key) => (
+                    <Navbar.Link href={link.href} hidden={link.authorize && !session?.user} as={Link} key={key}>
+                        {link.title}
+                    </Navbar.Link>
+                ))}
+            </Navbar.Collapse>
+        </Navbar>
     )
+}
+
+function UserImageOrDefault(user: DefaultUser | undefined): string {
+    if(!user || !user.image) {
+        return "https://flowbite.com/docs/images/logo.svg";
+    }
+
+    return user.image
 }
