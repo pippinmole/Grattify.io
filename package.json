@@ -19,7 +19,6 @@
   ],
   "dependencies": {
     "@next-auth/mongodb-adapter": "^1.1.1",
-    "@types/mongoose": "^5.11.97",
     "mongodb": "^4.15.0",
     "mongoose": "^7.0.3",
     "next": "latest",
