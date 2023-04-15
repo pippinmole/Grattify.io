@@ -51,8 +51,7 @@ export default function Header() {
               <span className={styles.notSignedInText}>
                 You are not signed in
               </span>
-                            <a
-                                href={`/api/auth/signin`}
+                            <Link href={`/api/auth/signin`}
                                 className={styles.buttonPrimary}
                                 onClick={(e) => {
                                     e.preventDefault()
@@ -60,7 +59,7 @@ export default function Header() {
                                 }}
                             >
                                 Sign in
-                            </a>
+                            </Link>
                         </>
                     )}
                     {session?.user && (
