@@ -12,19 +12,17 @@ export default async function handler(
 
     const session = await getServerSession(req, res, authOptions)
     if (!session) {
-        res.status(401).json({ error: "Unauthorized" });
+        res.status(401).json({error: "Unauthorized"});
         return;
     }
 
     const user = session.user
     const {content} = req.body
 
-    const post = await Post.create({
+    Post.create({
         content: content,
         author: user.id
     })
-
-    console.log("Created new post: " + JSON.stringify(post))
-
-    res.send(JSON.stringify(post, null, 2))
+        .then(r => res.status(200).json(r))
+        .catch(err => res.status(500).json(err))
 }

@@ -1,6 +1,7 @@
 import Layout from "../components/layout"
 import React, {useState} from "react";
 import {useRouter} from "next/router";
+import {MongooseError} from "mongoose";
 
 interface IPostForm {
     content: string
@@ -9,14 +10,14 @@ interface IPostForm {
 export default function IndexPage() {
 
     const { push } = useRouter();
+    const [error, setError] = useState<MongooseError | null>(null)
     const [submitting, setSubmitting] = useState(false)
     const [formData, setFormData] = useState<IPostForm>({
-        content: '',
+        content: ''
     });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
-        console.log("Setting " + name + " to: " + value)
         setFormData({
             ...formData,
             [name]: value,
@@ -24,24 +25,35 @@ export default function IndexPage() {
     };
 
     async function submitDailyGratitude(e: React.FormEvent<HTMLFormElement>) {
-        setSubmitting(true)
+        e.preventDefault()
 
-        fetch('/api/post/new', {
+        setSubmitting(true)
+        setError(null)
+
+        const response = await fetch('/api/post/new', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(formData),
         })
-            .then(r => r.json())
-            .then(r => push(`post/${r._id}`))
-            .finally(() => setSubmitting(false));
 
-        e.preventDefault()
+        const data = await response.json()
+
+        if (!data || !response.ok) {
+            setError(data)
+        } else {
+            await push(`post/${data._id}`)
+            setError(null)
+        }
+
+        setSubmitting(false)
     }
 
     return (
         <Layout>
+            {error && <ErrorMessage error={error}></ErrorMessage> }
+
             <h1 className="text-3xl font-bold text-center">
                 What are you grateful for today?
             </h1>
@@ -52,7 +64,7 @@ export default function IndexPage() {
                 </label>
 
                 <textarea id="message"
-                          rows={4}
+                          rows={7}
                           className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           placeholder="Write your thoughts here..."
                           name="content"
@@ -60,30 +72,24 @@ export default function IndexPage() {
                           onChange={handleChange}>
                 </textarea>
 
-                <div className="flex items-center justify-center w-full pt-4">
-                    <label htmlFor="dropzone-file"
-                           className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none"
-                                 stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                            </svg>
-                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or
-                                drag and drop</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX.
-                                800x400px)</p>
-                        </div>
-                        <input id="dropzone-file" type="file" className="hidden"/>
-                    </label>
-                </div>
-
-
                 <div className="text-center">
                     <LoadingButton isLoading={submitting}></LoadingButton>
                 </div>
             </form>
         </Layout>
+    )
+}
+
+function ErrorMessage({error}: {error: MongooseError}) {
+    return (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 my-4 rounded relative" role="alert">
+            <span className="block sm:inline">{error.message}</span>
+            <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 20 20"><title>Close</title><path
+        d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+  </span>
+        </div>
     )
 }
 
