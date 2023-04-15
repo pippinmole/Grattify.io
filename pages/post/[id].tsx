@@ -19,7 +19,7 @@ function PostPage({ post }: { post: IPost}) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { id } = context.query;
+    const {id} = context.query;
 
     const post = await Post.findById(id)
 
@@ -27,7 +27,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
             post: JSON.stringify(post)
         },
-    };}
+    };
+}
 
 
 export default PostPage;
