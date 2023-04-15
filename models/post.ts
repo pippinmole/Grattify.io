@@ -10,7 +10,7 @@ export interface IPost extends Document {
 const postSchema = new mongoose.Schema({
     content: {
         type: String,
-        required: true,
+        required: [true, 'Content is required for a post']
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
