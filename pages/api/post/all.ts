@@ -13,8 +13,7 @@ export default async function handler(
 
     const session = await getServerSession(req, res, authOptions)
 
-    const result = await Post.find()
-    console.log(result)
+    const result = await Post.find().populate('author')
 
     res.send(JSON.stringify(result, null, 2))
 }

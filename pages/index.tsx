@@ -1,6 +1,6 @@
 import Layout from "../components/layout"
 import React, {useState} from "react";
-import {getSession} from "next-auth/react";
+import {useRouter} from "next/router";
 
 interface IPostForm {
     content: string
@@ -8,6 +8,7 @@ interface IPostForm {
 
 export default function IndexPage() {
 
+    const { push } = useRouter();
     const [submitting, setSubmitting] = useState(false)
     const [formData, setFormData] = useState<IPostForm>({
         content: '',
@@ -33,6 +34,7 @@ export default function IndexPage() {
             body: JSON.stringify(formData),
         })
             .then(r => r.json())
+            .then(r => push(`post/${r._id}`))
             .finally(() => setSubmitting(false));
 
         e.preventDefault()
