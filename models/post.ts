@@ -1,10 +1,13 @@
-import mongoose from 'mongoose';
+import mongoose, {Model, Schema} from 'mongoose';
+
+interface IPost extends Document {
+    content: string;
+    author: Schema.Types.ObjectId;
+    createdAt: Date;
+    updatedAt: Date;
+}
 
 const postSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-    },
     content: {
         type: String,
         required: true,
@@ -24,6 +27,12 @@ const postSchema = new mongoose.Schema({
     },
 });
 
-const Post = mongoose.models.Post || mongoose.model('Post', postSchema);
+let Post: Model<IPost>;
+
+if (mongoose.models.Post) {
+    Post = mongoose.model<IPost>('Post');
+} else {
+    Post = mongoose.model<IPost>('Post', postSchema);
+}
 
 export default Post;

@@ -1,16 +1,39 @@
 import Layout from "../components/layout"
 import React, {useState} from "react";
+import {getSession} from "next-auth/react";
+
+interface IPostForm {
+    content: string
+}
 
 export default function IndexPage() {
 
     const [submitting, setSubmitting] = useState(false)
+    const [formData, setFormData] = useState<IPostForm>({
+        content: '',
+    });
 
-    function submitDailyGratitude(e: React.FormEvent<HTMLFormElement>) {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = event.target;
+        console.log("Setting " + name + " to: " + value)
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    async function submitDailyGratitude(e: React.FormEvent<HTMLFormElement>) {
         setSubmitting(true)
 
-        setTimeout(() => {
-            setSubmitting(false)
-        }, 2000)
+        fetch('/api/post/new', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+            .then(r => r.json())
+            .finally(() => setSubmitting(false));
 
         e.preventDefault()
     }
@@ -28,11 +51,12 @@ export default function IndexPage() {
 
                 <textarea id="message"
                           rows={4}
-                          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300
-                      focus:ring-blue-500 focus:border-blue-500
-                      dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          placeholder="Write your thoughts here..."></textarea>
-
+                          className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          placeholder="Write your thoughts here..."
+                          name="content"
+                          value={formData.content}
+                          onChange={handleChange}>
+                </textarea>
 
                 <div className="flex items-center justify-center w-full pt-4">
                     <label htmlFor="dropzone-file"

@@ -13,15 +13,8 @@ export default async function handler(
 
     const session = await getServerSession(req, res, authOptions)
 
-    const post = new Post({
-        title: "Test Title",
-        content: "Test Description",
-        author: "6439d26832166e3a85cb763e"
-    })
+    const result = await Post.find()
+    console.log(result)
 
-    console.log("Creating new post: " + JSON.stringify(post))
-
-    await post.save()
-
-    res.send(JSON.stringify(post, null, 2))
+    res.send(JSON.stringify(result, null, 2))
 }
