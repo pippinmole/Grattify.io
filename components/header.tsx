@@ -5,7 +5,7 @@ import siteMetadata from '../data/siteMetadata'
 import headerNavLinks from '../data/navLinks'
 import React from "react";
 import {Avatar, Dropdown, Navbar} from "flowbite-react";
-import {DefaultUser} from "next-auth";
+import {DefaultUser, Session} from "next-auth";
 
 // The approach used in this component shows how to build a sign in and sign out
 // component that works on pages which support both client and server side
@@ -31,40 +31,11 @@ export default function Header() {
                     label={<Avatar alt="User settings"
                                    img={UserImageOrDefault(session?.user)} rounded={true}/>}
                 >
-                    <Dropdown.Header>
-                        <span className="block text-sm">
-                          {session?.user.name}
-                        </span>
-                        <span className="block truncate text-sm font-medium">
-                          {session?.user.email}
-                        </span>
-                    </Dropdown.Header>
-                    <Dropdown.Item>
-                        Dashboard
-                    </Dropdown.Item>
-                    <Dropdown.Item>
-                        Settings
-                    </Dropdown.Item>
-                    <Dropdown.Item>
-                        Earnings
-                    </Dropdown.Item>
-                    <Dropdown.Divider/>
 
-                    {session?.user ? (
-                        <Link href="/api/auth/signout">
-                        <Dropdown.Item>
-                            Sign out
-                        </Dropdown.Item>
-                        </Link>
-                    ) : (
-                        <Link href="/api/auth/signin">
-                        <Dropdown.Header>
-                            Sign in
-                        </Dropdown.Header>
-                        </Link>
-                    )}
+                    {session?.user ? <AuthorizedDropdown session={session}/> : <UnauthorizedDropdown/>}
 
                 </Dropdown>
+
                 <Navbar.Toggle/>
             </div>
 
@@ -78,6 +49,66 @@ export default function Header() {
         </Navbar>
     )
 }
+
+const UnauthorizedDropdown = () => (
+    <>
+        {/*<Link href="/profile">*/}
+        {/*    <Dropdown.Item>*/}
+        {/*        My Profile*/}
+        {/*    </Dropdown.Item>*/}
+        {/*</Link>*/}
+
+        {/*<Dropdown.Divider/>*/}
+
+        <Link href="/api/auth/signin">
+            <Dropdown.Item>
+                Sign in
+            </Dropdown.Item>
+        </Link>
+    </>
+);
+
+const AuthorizedDropdown = ({session}: { session: Session }) => (
+    <>
+        <Dropdown.Header>
+                        <span className="block text-sm">
+                          {session?.user.name}
+                        </span>
+            <span className="block truncate text-sm font-medium">
+                          {session?.user.email}
+                        </span>
+        </Dropdown.Header>
+
+        <Link href="/profile">
+            <Dropdown.Item>
+                My Profile
+            </Dropdown.Item>
+        </Link>
+
+        <Dropdown.Item>
+            Settings
+        </Dropdown.Item>
+        <Dropdown.Item>
+            Earnings
+        </Dropdown.Item>
+
+        <Dropdown.Divider/>
+
+        {session?.user ? (
+            <Link href="/api/auth/signout">
+                <Dropdown.Item>
+                    Sign out
+                </Dropdown.Item>
+            </Link>
+        ) : (
+            <Link href="/api/auth/signin">
+                <Dropdown.Header>
+                    Sign in
+                </Dropdown.Header>
+            </Link>
+        )}
+    </>
+);
 
 function UserImageOrDefault(user: DefaultUser | undefined): string {
     if(!user || !user.image) {

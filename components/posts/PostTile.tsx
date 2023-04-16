@@ -1,5 +1,6 @@
 import {IPost} from "../../models/post";
 import Link from "next/link";
+import Moment from "react-moment";
 
 export default function PostTile({post}: {post: IPost}) {
     return (
@@ -10,13 +11,13 @@ export default function PostTile({post}: {post: IPost}) {
                      alt="blog"/>
                 <div className="p-6">
                     <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
-                        CATEGORY
+                        Created <Moment fromNow={true} date={post.createdAt}></Moment>
                     </h2>
 
                     <h1 className="title-font text-lg font-medium mb-3">
                         The Catalyzer
                     </h1>
-                    <p className="leading-relaxed mb-3">{post.content.slice(0, 35)}</p>
+                    <p className="leading-relaxed mb-3">{post.content.length > 35 ? `${post.content.slice(0, 35)}...` : post.content}</p>
 
                     <div className="flex items-center flex-wrap ">
                         <Link className="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0"

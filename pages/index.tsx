@@ -7,13 +7,15 @@ import Post, {IPost} from "../models/post";
 import {GetServerSideProps} from "next";
 import dbConnect from "../lib/mongoose";
 import Countdown from "../components/countdown/Countdown";
-import {DefaultUser} from "next-auth";
 import useSWR from "swr";
 import fetcher from "../lib/fetch";
 import {CustomUser} from "../types/next-auth";
 import PostTile from "../components/posts/PostTile";
 import PostTileContainer from "../components/posts/PostTileContainer";
 import PostTileSkeleton from "../components/posts/PostTileSkeleton";
+import {Button} from "flowbite-react";
+import {HiOutlineArrowRight} from "react-icons/hi";
+import Link from "next/link";
 
 interface IPostForm {
     content: string
@@ -26,14 +28,18 @@ export default function IndexPage({post}: { post: IPost }) {
 
     return (
         <Layout>
-            {post ? (<ExistingPost post={post}/>) : (<CreatePost/>)}
+            {post && session?.user ? (<AlreadyPosted post={post}/>) : (<CreatePost/>)}
 
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
 
             <div className="flex flex-col items-center">
-                <h1 className="text-2xl font-medium title-font mb-4 tracking-widest text-center">
-                    Some of your posts
+                <h1 className="text-2xl font-medium title-font tracking-widest text-center">
+                    📅 Your Recent Posts
                 </h1>
+
+                <p className="tracking-normal text-gray-500 md:text-sm dark:text-gray-400 text-center my-4">
+                    Here's a collection of your latest posts. Keep engaging and sharing your thoughts!
+                </p>
 
                 {session?.user ? (<PostsByUser user={session?.user!}/>) : (<></>)}
             </div>
@@ -51,7 +57,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const todaysPost = await Post.findOne({
         createdAt: {
             $gte: dayAgo
-        }
+        },
+        user: context.query.user
     });
 
     return {
@@ -113,7 +120,12 @@ function CreatePost() {
                 What are you grateful for today?
             </h1>
 
-            <form onSubmit={(e) => submitDailyGratitude(e)}>
+            <p className="tracking-normal text-gray-500 md:text-sm dark:text-gray-400 text-center my-4">
+                Posts can be made every 24 hours. Please wait until the time has elapsed. 😃
+            </p>
+
+            <form onSubmit={(e) => submitDailyGratitude(e)}
+            className="max-w-screen-md mx-auto">
                 <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     Your message
                 </label>
@@ -181,9 +193,8 @@ function CreatePost() {
     )
 }
 
-function ExistingPost({post}: {post: IPost}) {
+function AlreadyPosted({post}: {post: IPost}) {
 
-    // redirect
     const {push} = useRouter()
 
     return (
@@ -197,6 +208,13 @@ function ExistingPost({post}: {post: IPost}) {
             </p>
 
             <Countdown from={NextPostAllowed(new Date(post.createdAt))} onFinished={() => push('/')}></Countdown>
+
+            <Link href={`/post/${post._id}`}>
+                <Button className="my-8 mx-auto">
+                    View post
+                    <HiOutlineArrowRight className="ml-2 h-5 w-5"/>
+                </Button>
+            </Link>
         </>
     )
 }
@@ -224,13 +242,33 @@ function PostsByUser({user}: {user: CustomUser}) {
     return (
         <PostTileContainer>
             {isLoading ? (
-                Array.from(Array(3).keys()).map((key) => (
-                    <PostTileSkeleton key={key}></PostTileSkeleton>
-                ))
-            ) : (
-                data?.map((post, key) => (
-                    <PostTile post={post} key={key}></PostTile>
-                )))}
+                Array.from(Array(3).keys()).map((key) =>
+                    <PostTileSkeleton key={key}></PostTileSkeleton>)
+            ) : (<PostTilesOrNothing user={user} data={data} />)}
         </PostTileContainer>
+    )
+}
+
+function PostTilesOrNothing({user, data}: {user: CustomUser, data: IPost[] | undefined}) {
+    if(!user) {
+        return (
+            <p className="font-medium text-gray-900 dark:text-white text-center m-auto my-8">
+                🧑 Sign in to see your posts!
+            </p>
+        )
+    }
+
+    if (!data || data.length === 0) {
+        return (
+            <p className="font-medium text-gray-900 dark:text-white text-center m-auto my-8">
+                🔎 We couldn't find any posts! Go ahead and make one!
+            </p>
+        )
+    }
+
+    return (
+        <>
+            {data?.map((post, key) => <PostTile post={post} key={key}></PostTile>)}
+        </>
     )
 }

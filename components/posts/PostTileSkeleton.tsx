@@ -1,7 +1,8 @@
 export default function PostTileSkeleton() {
     return (
+        <div className="p-4 md:w-1/3">
         <div role="status"
-             className="max-w-sm p-4 border border-gray-200 rounded shadow animate-pulse md:p-6 dark:border-gray-700">
+             className="max-w-sm border border-gray-100 rounded shadow animate-pulse md:p-6 dark:border-gray-700">
             <div className="flex items-center justify-center h-48 mb-4 bg-gray-300 rounded dark:bg-gray-700">
                 <svg className="w-12 h-12 text-gray-200 dark:text-gray-600" xmlns="http://www.w3.org/2000/svg"
                      aria-hidden="true" fill="currentColor" viewBox="0 0 640 512">
@@ -27,6 +28,6 @@ export default function PostTileSkeleton() {
             </div>
             <span className="sr-only">Loading...</span>
         </div>
-
+</div>
     )
 }

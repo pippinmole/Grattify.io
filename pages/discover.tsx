@@ -1,37 +1,52 @@
 import Layout from "../components/layout";
 import Post, {IPost} from "../models/post";
 import {GetServerSideProps} from "next";
-import Link from "next/link";
 import dbConnect from "../lib/mongoose";
-import React from "react";
+import React, {useEffect} from "react";
 import PostTile from "../components/posts/PostTile";
 import PostTileContainer from "../components/posts/PostTileContainer";
+import useSWR from "swr";
+import fetcher from "../lib/fetch";
+import {useSession} from "next-auth/react";
+import PostTileSkeleton from "../components/posts/PostTileSkeleton";
+import {toast} from "react-toast";
 
-export default function DiscoverPage({ posts }: { posts: IPost[]}) {
+export default function DiscoverPage() {
 
-    posts = JSON.parse(posts as unknown as string)
+    const {data: session, status} = useSession()
+    const {data, error, isLoading} = useSWR<IPost[]>(
+        session?.user ? `/api/post/all` : null, fetcher, {
+            dedupingInterval: 3600000,
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+        }
+    )
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error.message)
+        }
+    }, [error])
 
     return (
         <Layout>
-            <h1 className="text-2xl font-medium title-font mb-4 tracking-widest text-center">
-                DISCOVER
+            <h1 className="text-3xl font-bold text-center">
+                Discover
             </h1>
 
+            <p className="tracking-normal text-gray-500 md:text-sm dark:text-gray-400 text-center my-4">
+                Take a look at what other people are grateful for! 🌎
+            </p>
+
             <PostTileContainer>
-                {posts.map((post, key) => <PostTile post={post} key={key}></PostTile>)}
+                {isLoading ? (
+                    Array.from(Array(3).keys()).map((key) =>
+                        <PostTileSkeleton key={key}></PostTileSkeleton>)
+                ) : (
+                    <>
+                        {data && data.map((post, key) => <PostTile post={post} key={key}></PostTile>)}
+                    </>)}
             </PostTileContainer>
         </Layout>
     )
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    await dbConnect();
-
-    const posts = await Post.find().lean()
-
-    return {
-        props: {
-            posts: JSON.stringify(posts)
-        },
-    };
 }
