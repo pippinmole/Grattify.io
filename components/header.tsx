@@ -4,7 +4,7 @@ import ThemeSwitch from "./ThemeSwitch";
 import siteMetadata from '../data/siteMetadata'
 import headerNavLinks from '../data/navLinks'
 import React from "react";
-import {Accordion, Avatar, Dropdown, Navbar} from "flowbite-react";
+import {Avatar, Dropdown, Navbar} from "flowbite-react";
 import {DefaultUser} from "next-auth";
 
 // The approach used in this component shows how to build a sign in and sign out
@@ -50,9 +50,19 @@ export default function Header() {
                     </Dropdown.Item>
                     <Dropdown.Divider/>
 
-                    <Dropdown.Header>
-                        Sign out
-                    </Dropdown.Header>
+                    {session?.user ? (
+                        <Link href="/api/auth/signout">
+                        <Dropdown.Item>
+                            Sign out
+                        </Dropdown.Item>
+                        </Link>
+                    ) : (
+                        <Link href="/api/auth/signin">
+                        <Dropdown.Header>
+                            Sign in
+                        </Dropdown.Header>
+                        </Link>
+                    )}
 
                 </Dropdown>
                 <Navbar.Toggle/>

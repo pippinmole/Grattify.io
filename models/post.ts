@@ -1,7 +1,7 @@
 import mongoose, {Model, Schema} from 'mongoose';
 
 export interface IPost extends Document {
-    _id: string;
+    _id: Schema.Types.ObjectId;
     content: string;
     author: Schema.Types.ObjectId;
     createdAt: Date;

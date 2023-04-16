@@ -1,19 +1,69 @@
 import Layout from "../components/layout"
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import {MongooseError} from "mongoose";
 import { useSession } from "next-auth/react"
-import {Alert} from "flowbite-react";
 import {toast} from "react-toast";
+import Post, {IPost} from "../models/post";
+import {GetServerSideProps} from "next";
+import dbConnect from "../lib/mongoose";
+import Countdown from "../components/countdown/Countdown";
+import {DefaultUser} from "next-auth";
+import useSWR from "swr";
+import fetcher from "../lib/fetch";
+import {CustomUser} from "../types/next-auth";
+import PostTile from "../components/posts/PostTile";
+import PostTileContainer from "../components/posts/PostTileContainer";
+import PostTileSkeleton from "../components/posts/PostTileSkeleton";
 
 interface IPostForm {
     content: string
 }
 
-export default function IndexPage() {
-
-    const {push} = useRouter();
+export default function IndexPage({post}: { post: IPost }) {
     const {data: session, status} = useSession()
+
+    post = JSON.parse(post as unknown as string)
+
+    return (
+        <Layout>
+            {post ? (<ExistingPost post={post}/>) : (<CreatePost/>)}
+
+            <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+
+            <div className="flex flex-col items-center">
+                <h1 className="text-2xl font-medium title-font mb-4 tracking-widest text-center">
+                    Some of your posts
+                </h1>
+
+                {session?.user ? (<PostsByUser user={session?.user!}/>) : (<></>)}
+            </div>
+        </Layout>
+    )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    await dbConnect();
+
+    // Find all posts pertaining to a user
+    const dayAgo = new Date();
+    dayAgo.setDate(dayAgo.getDate() - 1);
+
+    const todaysPost = await Post.findOne({
+        createdAt: {
+            $gte: dayAgo
+        }
+    });
+
+    return {
+        props: {
+            post: JSON.stringify(todaysPost)
+        }
+    };
+}
+
+function CreatePost() {
+    const {push} = useRouter();
+    const {data: session} = useSession()
     const [submitting, setSubmitting] = useState(false)
     const [formData, setFormData] = useState<IPostForm>({
         content: ''
@@ -53,12 +103,12 @@ export default function IndexPage() {
             await push(`post/${data._id}`)
         }
 
-
         setSubmitting(false)
     }
 
+
     return (
-        <Layout>
+        <>
             <h1 className="text-3xl font-bold text-center">
                 What are you grateful for today?
             </h1>
@@ -127,6 +177,60 @@ export default function IndexPage() {
                     </button>
                 </div>
             </form>
-        </Layout>
+        </>
+    )
+}
+
+function ExistingPost({post}: {post: IPost}) {
+
+    // redirect
+    const {push} = useRouter()
+
+    return (
+        <>
+            <h1 className="text-2xl font-medium title-font mb-4 tracking-widest text-center">
+                You have already posted today!
+            </h1>
+
+            <p className="tracking-normal text-gray-500 md:text-sm dark:text-gray-400 text-center">
+                Posts can be made every 24 hours. Please wait until the time has elapsed. 😃
+            </p>
+
+            <Countdown from={NextPostAllowed(new Date(post.createdAt))} onFinished={() => push('/')}></Countdown>
+        </>
+    )
+}
+
+function NextPostAllowed(date: Date): Date {
+    date.setHours(date.getHours() + 24)
+    return date
+}
+
+function PostsByUser({user}: {user: CustomUser}) {
+    const {data, error, isLoading} = useSWR<IPost[]>(
+        user ? `/api/user/${user.id}/posts` : null, fetcher, {
+            dedupingInterval: 3600000,
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+        }
+    )
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error.message)
+        }
+    }, [error])
+
+    return (
+        <PostTileContainer>
+            {isLoading ? (
+                Array.from(Array(3).keys()).map((key) => (
+                    <PostTileSkeleton key={key}></PostTileSkeleton>
+                ))
+            ) : (
+                data?.map((post, key) => (
+                    <PostTile post={post} key={key}></PostTile>
+                )))}
+        </PostTileContainer>
     )
 }

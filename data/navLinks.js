@@ -8,6 +8,14 @@ const headerNavLinks = [
     // { href: '/api-example', title: 'API' },
     // { href: '/admin', title: 'Admin' },
     // { href: '/me', title: 'Me' },
-]
+];
+
+const dropdownNavLinks = [
+    { href: '/profile', title: 'My Profile', authorize: true },
+    { href: '/profile', title: 'My Profile', authorize: true },
+    { href: '/profile', title: 'My Profile', authorize: true },
+    { href: '/profile', title: 'Sign in', authorize: true },
+    { href: '/profile', title: 'Sign out', authorize: true },
+];
 
 export default headerNavLinks

@@ -14,7 +14,7 @@ export default function App({
   return (
       <SessionProvider session={session}>
         <ThemeProvider attribute="class">
-          <Component {...pageProps} />
+          <Component {...pageProps} data-superjson />
         </ThemeProvider>
       </SessionProvider>
   )
