@@ -1,12 +1,20 @@
 import dbConnect from "../../../../lib/mongoose";
 import Post, {IPost} from "../../../../models/post";
 import {NextApiRequest, NextApiResponse} from "next";
-import {Schema} from "mongoose";
 
 async function getPostsByUserId(userId: string): Promise<IPost[]> {
     await dbConnect();
 
-    return Post.find({ author: userId }).lean();
+    // const result = Post.find({}).populate('author');
+    // console.log("Start")
+    // result.lean().then(x=>console.log(x));
+    //
+    // console.log("End")
+    // return result.lean();
+
+    const result = Post.find({ author: userId })
+
+    return result.lean();
 }
 
 export default async function handler(

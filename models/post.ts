@@ -1,10 +1,12 @@
 import mongoose, {Model, Schema} from 'mongoose';
+import {CustomUser} from "../types/next-auth";
 
 export interface IPost extends Document {
     _id: Schema.Types.ObjectId;
     title: string;
     content: string;
-    author: Schema.Types.ObjectId;
+    imageRefs: string[];
+    author: CustomUser;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -17,6 +19,10 @@ const postSchema = new mongoose.Schema({
     content: {
         type: String,
         required: [true, 'Content is required for a post']
+    },
+    imageRefs: {
+        type: [String],
+        default: []
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
@@ -33,12 +39,14 @@ const postSchema = new mongoose.Schema({
     },
 });
 
-let Post: Model<IPost>;
+// let Post: Model<IPost>;
+//
+// if (mongoose.models.Post) {
+//     Post = mongoose.model<IPost>('Post');
+// } else {
+//     Post = mongoose.model<IPost>('Post', postSchema);
+// }
 
-if (mongoose.models.Post) {
-    Post = mongoose.model<IPost>('Post');
-} else {
-    Post = mongoose.model<IPost>('Post', postSchema);
-}
+const Post = mongoose.models.Post || mongoose.model<IPost>('Post', postSchema);
 
 export default Post;
