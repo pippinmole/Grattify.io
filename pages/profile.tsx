@@ -4,7 +4,6 @@ import {useSession} from "next-auth/react";
 import AccessDenied from "../components/access-denied";
 
 export default function Profile() {
-
     const { data: session } = useSession()
 
     // If no session exists, display access denied message

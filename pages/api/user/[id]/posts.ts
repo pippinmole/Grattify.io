@@ -15,7 +15,7 @@ export default async function handler(
 ): Promise<void> {
     const { query, method } = req;
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
 
     switch (method) {
         case "GET":

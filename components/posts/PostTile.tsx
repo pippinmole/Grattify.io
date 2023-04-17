@@ -16,7 +16,7 @@ export default function PostTile({post}: {post: IPost}) {
                     </h2>
 
                     <h1 className="title-font text-lg font-medium mb-3">
-                        The Catalyzer
+                        {post.title?.length > 35 ? `${post.title.slice(0, 35)}...` : post.title}
                     </h1>
                     <p className="leading-relaxed mb-3">{post.content.length > 35 ? `${post.content.slice(0, 35)}...` : post.content}</p>
 

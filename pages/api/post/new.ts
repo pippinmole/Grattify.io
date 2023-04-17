@@ -17,9 +17,10 @@ export default async function handler(
     }
 
     const user = session.user
-    const {content} = req.body
+    const {title, content} = req.body
 
     Post.create({
+        title: title,
         content: content,
         author: user.id
     })

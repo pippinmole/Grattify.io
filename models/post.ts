@@ -2,6 +2,7 @@ import mongoose, {Model, Schema} from 'mongoose';
 
 export interface IPost extends Document {
     _id: Schema.Types.ObjectId;
+    title: string;
     content: string;
     author: Schema.Types.ObjectId;
     createdAt: Date;
@@ -9,6 +10,10 @@ export interface IPost extends Document {
 }
 
 const postSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: [true, 'A title is required for a post']
+    },
     content: {
         type: String,
         required: [true, 'Content is required for a post']

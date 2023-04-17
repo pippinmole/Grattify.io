@@ -13,7 +13,7 @@ export default function ExistingPost({post}: {post: IPost}) {
     return (
         <>
             <h1 className="text-2xl font-medium title-font mb-4 tracking-widest text-center">
-                You have already posted today!
+                You've already posted today!
             </h1>
 
             <p className="tracking-normal text-gray-500 md:text-sm dark:text-gray-400 text-center">
@@ -24,7 +24,7 @@ export default function ExistingPost({post}: {post: IPost}) {
 
             <Link href={`/post/${post._id}`}>
                 <Button className="my-8 mx-auto">
-                    View post
+                    View today's post
                     <HiOutlineArrowRight className="ml-2 h-5 w-5"/>
                 </Button>
             </Link>

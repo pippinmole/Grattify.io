@@ -1,7 +1,5 @@
 import Layout from "../components/layout";
 import Post, {IPost} from "../models/post";
-import {GetServerSideProps} from "next";
-import dbConnect from "../lib/mongoose";
 import React, {useEffect} from "react";
 import PostTile from "../components/posts/PostTile";
 import PostTileContainer from "../components/posts/PostTileContainer";
@@ -12,7 +10,6 @@ import PostTileSkeleton from "../components/posts/PostTileSkeleton";
 import {toast} from "react-toast";
 
 export default function DiscoverPage() {
-
     const {data: session, status} = useSession()
     const {data, error, isLoading} = useSWR<IPost[]>(
         session?.user ? `/api/post/all` : null, fetcher, {
@@ -39,13 +36,10 @@ export default function DiscoverPage() {
             </p>
 
             <PostTileContainer>
-                {isLoading ? (
-                    Array.from(Array(3).keys()).map((key) =>
-                        <PostTileSkeleton key={key}></PostTileSkeleton>)
-                ) : (
-                    <>
-                        {data && data.map((post, key) => <PostTile post={post} key={key}></PostTile>)}
-                    </>)}
+                {isLoading && Array(3).map((key) => <PostTileSkeleton key={key}></PostTileSkeleton>)}
+
+                {data && data.map((post, key) => <PostTile post={post} key={key}></PostTile>)}
+                {data?.length === 0 && <>No posts!</>}
             </PostTileContainer>
         </Layout>
     )
