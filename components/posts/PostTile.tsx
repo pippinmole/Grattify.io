@@ -1,14 +1,15 @@
 import {IPost} from "../../models/post";
 import Link from "next/link";
 import Moment from "react-moment";
+import Image from "next/image";
 
 export default function PostTile({post}: {post: IPost}) {
     return (
         <div className="p-4 md:w-1/3">
             <div
                 className="h-full border-2 border-gray-200 dark:border-gray-600 border-opacity-60 rounded-lg overflow-hidden">
-                <img className="lg:h-48 md:h-36 w-full object-cover object-center" src="https://dummyimage.com/720x400"
-                     alt="blog"/>
+                <Image className="lg:h-48 md:h-36 w-full object-cover object-center" src="https://dummyimage.com/720x400"
+                     alt="blog" width={100} height={100}/>
                 <div className="p-6">
                     <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
                         Created <Moment fromNow={true} date={post.createdAt}></Moment>
