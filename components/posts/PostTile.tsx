@@ -8,7 +8,7 @@ export default function PostTile({post}: {post: IPost}) {
         <div className="p-4 md:w-1/3">
             <div
                 className="h-full border-2 border-gray-200 dark:border-gray-600 border-opacity-60 rounded-lg overflow-hidden">
-                <Image className="lg:h-48 md:h-36 w-full object-cover object-center" src="https://dummyimage.com/720x400"
+                <Image className="lg:h-48 md:h-36 w-full object-cover object-center" src="https://picsum.photos/200/400"
                      alt="blog" width={100} height={100}/>
                 <div className="p-6">
                     <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">

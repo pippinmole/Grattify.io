@@ -8,11 +8,7 @@ import {PostTile, PostTileContainer, PostTileSkeleton} from "../posts";
 
 export default function RecentPosts({user}: {user: DefaultUser | undefined}) {
     const {data, error, isLoading} = useSWR<IPost[]>(
-        user ? `/api/user/${user.id}/posts` : null, fetcher, {
-            dedupingInterval: 3600000,
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-        }
+        user ? `/api/user/${user.id}/posts` : null, fetcher
     )
 
     useEffect(() => {
@@ -33,7 +29,7 @@ export default function RecentPosts({user}: {user: DefaultUser | undefined}) {
 
             <PostTileContainer>
                 {isLoading
-                    ? Array(3).map((key) => <PostTileSkeleton key={key}></PostTileSkeleton>)
+                    ? [1,2,3].map((key) => <PostTileSkeleton key={key}></PostTileSkeleton>)
                     : user ? <PostTiles data={data}/>
                         : (
                             <p className="font-medium text-gray-900 dark:text-white text-center m-auto my-8">

@@ -12,11 +12,7 @@ import {toast} from "react-toast";
 export default function DiscoverPage() {
     const {data: session, status} = useSession()
     const {data, error, isLoading} = useSWR<IPost[]>(
-        session?.user ? `/api/post/all` : null, fetcher, {
-            dedupingInterval: 3600000,
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-        }
+        session?.user ? `/api/post/all` : null, fetcher
     )
 
     useEffect(() => {
@@ -36,7 +32,7 @@ export default function DiscoverPage() {
             </p>
 
             <PostTileContainer>
-                {isLoading && Array(3).map((key) => <PostTileSkeleton key={key}></PostTileSkeleton>)}
+                {isLoading && [1,2,3].map((key) => <PostTileSkeleton key={key}></PostTileSkeleton>)}
 
                 {data && data.map((post, key) => <PostTile post={post} key={key}></PostTile>)}
                 {data?.length === 0 && <>No posts!</>}
