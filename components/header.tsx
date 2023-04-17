@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { signIn, signOut, useSession } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import ThemeSwitch from "./ThemeSwitch";
 import siteMetadata from '../data/siteMetadata'
 import headerNavLinks from '../data/navLinks'
@@ -12,7 +12,6 @@ import {DefaultUser, Session} from "next-auth";
 // rendering, and avoids any flash incorrect content on initial page load.
 export default function Header() {
     const {data: session, status} = useSession()
-    const loading = status === "loading"
 
     return (
         <Navbar fluid={false} rounded={true}>

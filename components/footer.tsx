@@ -11,7 +11,7 @@ export default function Footer() {
               © 2023 Daily Gratitude. All rights reserved.
           </p>
           <div className="mt-4 flex items-center justify-center space-x-4 text-sm font-semibold leading-6 text-slate-700">
-            <Link href="/privacy-policy">Privacy policy</Link>
+            <Link href="/policy">Privacy policy</Link>
             <div className="h-4 w-px bg-slate-500/20"></div>
             <Link href="/changelog">Changelog</Link></div>
         </div>

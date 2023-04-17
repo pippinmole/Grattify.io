@@ -19,9 +19,8 @@ export default function Profile() {
     return (
         <Layout>
             <h1 className="text-3xl font-bold text-center">
-                {session?.user.name}
+                {session.user.name}
             </h1>
         </Layout>
     )
-
 }
