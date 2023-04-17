@@ -106,14 +106,6 @@ export default function CreatePost() {
                 </div>
 
                 <div>
-                    <div className="mb-2 block">
-                        <Label htmlFor="title1" value="Attach media"/>
-                    </div>
-
-                    <FileInput name="files" multiple/>
-                </div>
-
-                <div>
                     <Button type="submit" disabled={submitting} className="mx-auto">
                         {submitting ? (
                             <>
