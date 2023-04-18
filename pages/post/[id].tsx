@@ -2,10 +2,10 @@ import { GetServerSideProps } from 'next';
 import Post, {IPost} from "../../models/post";
 import Layout from "../../components/layout";
 import React from "react";
-import {Avatar, Carousel} from "flowbite-react";
+import {Carousel} from "flowbite-react";
 import User from "../../models/user";
-import Moment from "react-moment";
 import Image from "next/image";
+import UserProfile from "../../components/user/UserProfile";
 
 function PostPage({ post }: { post: IPost }) {
     post = JSON.parse(post as unknown as string)
@@ -13,20 +13,7 @@ function PostPage({ post }: { post: IPost }) {
     return (
         <Layout>
             <div>
-                <Avatar img={post?.author?.image ?? "https://flowbite.com/docs/images/people/profile-picture-5.jpg"} rounded={true}>
-                    <div className="space-y-1 font-medium dark:text-white">
-                        <div>
-                            {post?.author.name}
-
-                            <span className="text-lime-100 text-xs ml-2">
-                                Author
-                            </span>
-                        </div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                            Joined <Moment fromNow={true} date={post.author.createdAt}></Moment>
-                        </div>
-                    </div>
-                </Avatar>
+                {post.author && <UserProfile user={post.author}/>}
 
                 <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"/>
 
@@ -62,6 +49,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const _ = await User.find({}).lean()
     const post = await Post.findById(id).populate('author').lean();
+
+    console.log(post)
 
     return {
         props: {

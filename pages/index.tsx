@@ -5,6 +5,8 @@ import Post, {IPost} from "../models/post";
 import {GetServerSideProps} from "next";
 import dbConnect from "../lib/mongoose";
 import {CreatePost, ExistingPost, RecentPosts} from "../components/index";
+import {getServerSession} from "next-auth/next";
+import {authOptions} from "./api/auth/[...nextauth]";
 
 export default function IndexPage({post}: { post: IPost }) {
     const {data: session, status} = useSession()
@@ -25,13 +27,15 @@ export default function IndexPage({post}: { post: IPost }) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     await dbConnect();
 
+    const session = await getServerSession(context.req, context.res, authOptions)
+
     // Find all posts pertaining to a user
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const todaysPost = await Post.findOne({
         createdAt: {
             $gte: yesterday
         },
-        user: context.query.user
+        author: session?.user.id
     });
 
     return {

@@ -5,8 +5,9 @@ import {IPost} from "../../models/post";
 import fetcher from "../../lib/fetch";
 import {toast} from "react-toast";
 import {PostTile, PostTileContainer, PostTileSkeleton} from "../posts";
+import {CustomUser} from "../../types/next-auth";
 
-export default function RecentPosts({user}: {user: DefaultUser | undefined}) {
+export default function RecentPosts({user}: {user: CustomUser | undefined}) {
     const {data, error, isLoading} = useSWR<IPost[]>(
         user ? `/api/user/${user.id}/posts` : null, fetcher
     )
