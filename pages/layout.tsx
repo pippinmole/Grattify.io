@@ -1,11 +1,11 @@
 // import Header from "./header"
 import type { ReactNode } from "react"
 import React from "react";
-import Header from "./header";
+import Header from "../components/header";
 import {ToastContainer} from "react-toast";
-import Footer from "./footer";
+import Footer from "../components/footer";
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default function RootLayout({children}: { children: React.ReactNode; }) {
     return (
         <>
             <Header/>
@@ -15,7 +15,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <Footer/>
             </div>
 
-            <ToastContainer position="top-right" />
+            <ToastContainer position="top-right"/>
         </>
     )
 }

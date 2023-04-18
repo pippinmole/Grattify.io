@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import Post, {IPost} from "../../models/post";
-import Layout from "../../components/layout";
+import Layout from "../layout";
 import React from "react";
 import {Carousel} from "flowbite-react";
 import User from "../../models/user";
@@ -33,10 +33,10 @@ function PostPage({ post }: { post: IPost }) {
                     </div>
                 )}
 
-                <h2 className="text-4xl font-extrabold dark:text-white">
+                <h2 className="text-3xl font-bold">
                     {post.title}
                 </h2>
-                <p className="mb-4 text-lg font-normal text-gray-500 dark:text-gray-400 mt-2">
+                <p className="mb-4 text-lg font-thin text-gray-500 dark:text-gray-400 mt-2">
                     {post.content}
                 </p>
             </div>
@@ -49,8 +49,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const _ = await User.find({}).lean()
     const post = await Post.findById(id).populate('author').lean();
-
-    console.log(post)
 
     return {
         props: {

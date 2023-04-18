@@ -84,12 +84,15 @@ const AuthorizedDropdown = ({session}: { session: Session }) => (
             </Dropdown.Item>
         </Link>
 
-        <Dropdown.Item>
-            Settings
-        </Dropdown.Item>
-        <Dropdown.Item>
-            Earnings
-        </Dropdown.Item>
+        <Link href="/settings/index">
+            <Dropdown.Item>
+                Settings
+            </Dropdown.Item>
+        </Link>
+
+        {/*<Dropdown.Item>*/}
+        {/*    Earnings*/}
+        {/*</Dropdown.Item>*/}
 
         <Dropdown.Divider/>
 
@@ -110,7 +113,7 @@ const AuthorizedDropdown = ({session}: { session: Session }) => (
 );
 
 function UserImageOrDefault(user: DefaultUser | undefined): string {
-    if(!user || !user.image) {
+    if (!user || !user.image) {
         return "https://flowbite.com/docs/images/logo.svg";
     }
 

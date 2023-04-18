@@ -3,16 +3,12 @@ import {Avatar} from "flowbite-react";
 import React from "react";
 import Link from "next/link";
 
-export interface UserProfileIconProps {
-    user: CustomUser
-}
-
-export default function UserProfileIcon(props: UserProfileIconProps) {
+export default function UserProfileIcon({user}: {user: CustomUser}) {
     return (
-        <Link href={`/user/${props.user.id}`}>
+        <Link href={`/user/${user.id}`}>
             <div className="flex flex-wrap gap-2">
                 <Avatar
-                    img={props.user.image ?? "https://flowbite.com/docs/images/people/profile-picture-5.jpg"}
+                    img={user.image ?? "https://flowbite.com/docs/images/people/profile-picture-5.jpg"}
                     rounded={true}
                 />
             </div>

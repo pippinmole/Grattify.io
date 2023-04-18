@@ -1,4 +1,4 @@
-import Layout from "../components/layout";
+import Layout from "./layout";
 import Post, {IPost} from "../models/post";
 import React, {useEffect} from "react";
 import PostTile from "../components/posts/PostTile";

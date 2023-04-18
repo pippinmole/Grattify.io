@@ -1,4 +1,4 @@
-import Layout from "../components/layout"
+import Layout from "./layout"
 import React from "react";
 import { useSession } from "next-auth/react"
 import Post, {IPost} from "../models/post";
@@ -14,13 +14,13 @@ export default function IndexPage({post}: { post: IPost }) {
     post = JSON.parse(post as unknown as string) as IPost
 
     return (
-        <Layout>
+        <>
             {post ? <ExistingPost post={post}/> : <CreatePost/>}
 
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
 
             <RecentPosts user={session?.user}/>
-        </Layout>
+        </>
     )
 }
 

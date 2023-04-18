@@ -11,8 +11,8 @@ export default function UserProfile({user}: {user: CustomUser}) {
                     {user.name}
 
                     <span className="text-lime-100 text-xs ml-2">
-                                Author
-                            </span>
+                        Author
+                    </span>
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">
                     Joined <Moment fromNow={true} date={user.createdAt}></Moment>

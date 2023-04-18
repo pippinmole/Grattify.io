@@ -1,6 +1,7 @@
 import dbConnect from "../../../../lib/mongoose";
 import Post, {IPost} from "../../../../models/post";
 import {NextApiRequest, NextApiResponse} from "next";
+import User from "../../../../models/user";
 
 async function getPostsByUserId(userId: string): Promise<IPost[]> {
     await dbConnect();
@@ -12,7 +13,8 @@ async function getPostsByUserId(userId: string): Promise<IPost[]> {
     // console.log("End")
     // return result.lean();
 
-    const result = Post.find({ author: userId })
+    const x = await User.find();
+    const result = Post.find({ author: userId }).populate('author')
 
     return result.lean();
 }
