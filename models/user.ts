@@ -1,7 +1,14 @@
 import mongoose from 'mongoose';
 import {CustomUser} from "../types/next-auth";
 
-const postSchema = new mongoose.Schema({
+const userPreferencesSchema = new mongoose.Schema({
+    emailWhenPostAvailable: {
+        type: Boolean,
+        default: true
+    }
+});
+
+const userSchema = new mongoose.Schema({
     name: {
         type: String
     },
@@ -14,17 +21,13 @@ const postSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
+    },
+    preferences: {
+        type: userPreferencesSchema,
+        required: true
     }
 });
 
-// let User: Model<CustomUser>;
-//
-// if (mongoose.models.User) {
-//     User = mongoose.model<CustomUser>('User');
-// } else {
-//     User = mongoose.model<CustomUser>('User', postSchema);
-// }
-
-const User = mongoose.models.User ?? mongoose.model<CustomUser>('User', postSchema);
+const User = mongoose.models.User ?? mongoose.model<CustomUser>('User', userSchema);
 
 export default User;

@@ -5,7 +5,8 @@ import siteMetadata from '../data/siteMetadata'
 import headerNavLinks from '../data/navLinks'
 import React from "react";
 import {Avatar, Dropdown, Navbar} from "flowbite-react";
-import {DefaultUser, Session} from "next-auth";
+import {Session} from "next-auth";
+import {CustomUser} from "../types/next-auth";
 
 // The approach used in this component shows how to build a sign in and sign out
 // component that works on pages which support both client and server side
@@ -112,7 +113,7 @@ const AuthorizedDropdown = ({session}: { session: Session }) => (
     </>
 );
 
-function UserImageOrDefault(user: DefaultUser | undefined): string {
+function UserImageOrDefault(user: CustomUser | undefined): string {
     if (!user || !user.image) {
         return "https://flowbite.com/docs/images/logo.svg";
     }

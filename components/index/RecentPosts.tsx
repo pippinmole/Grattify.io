@@ -1,4 +1,3 @@
-import {User as DefaultUser} from "next-auth/core/types";
 import React, {useEffect} from "react";
 import useSWR from "swr";
 import {IPost} from "../../models/post";
