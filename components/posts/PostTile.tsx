@@ -3,6 +3,8 @@ import Link from "next/link";
 import Moment from "react-moment";
 import Image from "next/image";
 import UserProfileIcon from "../user/UserProfileIcon";
+import React from "react";
+import {HiArrowNarrowRight} from "react-icons/hi";
 
 export default function PostTile({post}: {post: IPost}) {
     return (
@@ -25,12 +27,7 @@ export default function PostTile({post}: {post: IPost}) {
                               href={`/post/${post._id}`}>
                             Read More
 
-                            <svg className="w-4 h-4 ml-2" viewBox="0 0 24 24" stroke="currentColor"
-                                 strokeWidth="2" fill="none" strokeLinecap="round"
-                                 strokeLinejoin="round">
-                                <path d="M5 12h14"></path>
-                                <path d="M12 5l7 7-7 7"></path>
-                            </svg>
+                            <HiArrowNarrowRight className="ml-1 h-3 w-3"/>
                         </Link>
                     </p>
 

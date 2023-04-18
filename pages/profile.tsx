@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "./layout";
+import Layout from "../components/layout";
 import {useSession} from "next-auth/react";
 import AccessDenied from "../components/access-denied";
 import {IPost} from "../models/post";

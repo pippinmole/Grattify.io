@@ -12,7 +12,5 @@ export default async function handler(
     const x = await User.find()
     const result = await Post.find().populate('author').lean()
 
-    console.log(result)
-
     res.send(JSON.stringify(result, null, 2))
 }

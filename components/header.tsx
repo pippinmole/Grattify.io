@@ -70,12 +70,12 @@ const UnauthorizedDropdown = () => (
 const AuthorizedDropdown = ({session}: { session: Session }) => (
     <>
         <Dropdown.Header>
-                        <span className="block text-sm">
-                          {session?.user.name}
-                        </span>
-            <span className="block truncate text-sm font-medium">
-                          {session?.user.email}
-                        </span>
+          <span className="block text-sm">
+            {session?.user.name}
+          </span>
+          <span className="block truncate text-sm font-medium">
+            {session?.user.email}
+          </span>
         </Dropdown.Header>
 
         <Link href="/profile">
@@ -84,7 +84,7 @@ const AuthorizedDropdown = ({session}: { session: Session }) => (
             </Dropdown.Item>
         </Link>
 
-        <Link href="/settings/index">
+        <Link href="/settings">
             <Dropdown.Item>
                 Settings
             </Dropdown.Item>

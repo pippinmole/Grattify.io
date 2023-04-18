@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import Post, {IPost} from "../../models/post";
-import Layout from "../layout";
+import Layout from "../../components/layout";
 import React from "react";
 import {Carousel} from "flowbite-react";
 import User from "../../models/user";

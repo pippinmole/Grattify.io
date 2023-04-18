@@ -1,9 +1,9 @@
 // import Header from "./header"
 import type { ReactNode } from "react"
 import React from "react";
-import Header from "../components/header";
+import Header from "./header";
 import {ToastContainer} from "react-toast";
-import Footer from "../components/footer";
+import Footer from "./footer";
 
 export default function RootLayout({children}: { children: React.ReactNode; }) {
     return (

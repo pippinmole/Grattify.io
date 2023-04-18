@@ -1,4 +1,4 @@
-import Layout from "./layout"
+import Layout from "../components/layout"
 import React from "react";
 import { useSession } from "next-auth/react"
 import Post, {IPost} from "../models/post";
@@ -43,4 +43,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             post: JSON.stringify(todaysPost)
         }
     };
+}
+
+IndexPage.getLayout = function getLayout(page: React.ReactNode) {
+    return <Layout>{page}</Layout>
 }
