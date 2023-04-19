@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
 import Layout from "../components/layout"
 import AccessDenied from "../components/access-denied"
+import {useSession} from "@supabase/auth-helpers-react";
 
 export default function ProtectedPage() {
-  const { data: session } = useSession()
+  const session = useSession()
   const [content, setContent] = useState()
 
   // Fetch content from protected route

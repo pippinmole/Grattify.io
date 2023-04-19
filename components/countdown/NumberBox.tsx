@@ -4,7 +4,7 @@ interface numProp {
     num: string | number,
     unit: string,
     flip: boolean,
-};
+}
 
 export const NumberBox = ({ num, unit, flip }: numProp) => {
     return (

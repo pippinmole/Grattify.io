@@ -1,18 +1,28 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Layout from "../components/layout";
 import AccessDenied from "../components/access-denied";
 import {Avatar, Button, Tabs, Timeline} from "flowbite-react";
 import {HiArrowNarrowRight, HiCalendar} from "react-icons/hi";
-import useSWR from "swr";
-import fetcher from "../lib/fetch";
 import Link from "next/link";
-import {useUser} from "@supabase/auth-helpers-react";
+import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
+import {getAllPostsForSession, getAllPostsForUserId, getProfile} from "../lib/supabaseUtils";
+import {Database} from "../models/schema";
+import {PostResponseArray, ProfileResponse} from "../models/types";
 
 export default function Profile() {
-    const user = useUser()
+    const session = useSession()
+    const supabaseClient = useSupabaseClient<Database>()
+    const [profile, setProfile] = useState<ProfileResponse>()
+
+    useEffect(() => {
+        if(!session) return
+
+        getProfile(supabaseClient, session)
+          .then(p => setProfile(p))
+    }, [session])
 
     // If no session exists, display access denied message
-    if (!user) {
+    if (!profile) {
         return (
             <Layout>
                 <AccessDenied/>
@@ -23,14 +33,14 @@ export default function Profile() {
     return (
         <Layout>
             <Avatar
-                img={user.image ?? "https://i.pravatar.cc/300"}
+                img={profile?.data?.profile_picture}
                 rounded={true}
                 size={"xl"}
                 className="w-fit mb-8 my-2"
             >
                 <div className="space-y-1 font-medium dark:text-white">
                     <div>
-                        {user.email}
+                        {profile.data?.username}
                     </div>
                     {/*<div className="text-sm text-gray-500 dark:text-gray-400">*/}
                     {/*    Joined in August 2014*/}
@@ -41,24 +51,19 @@ export default function Profile() {
                 </div>
             </Avatar>
 
-            <ProfileTabs user={user} />
+            <ProfileTabs profile={profile} />
         </Layout>
     )
 }
 
-function ProfileTabs({user}: {user: CustomUser}) {
-    const {data, isLoading, error} = useSWR<IPost[]>(
-        `/api/user/${user.id}/posts`,
-        fetcher
-    )
-
+function ProfileTabs({profile}: {profile: ProfileResponse}) {
     return (
         <Tabs.Group
             aria-label="Tabs with underline"
             style="underline"
         >
             <Tabs.Item title="Posts" active={true}>
-                {data && <PostsTimeline posts={data}/>}
+                {profile && <PostsTimeline profile={profile}/>}
             </Tabs.Item>
 
             <Tabs.Item title="About">
@@ -68,10 +73,23 @@ function ProfileTabs({user}: {user: CustomUser}) {
     )
 }
 
-function PostsTimeline({posts}: {posts: IPost[]}) {
+function PostsTimeline({profile}: {profile: ProfileResponse}) {
+
+    const supabaseClient = useSupabaseClient();
+    const [posts, setPosts] = useState<PostResponseArray>()
+
+    useEffect(() => {
+        if (!profile || !profile.data) return
+
+        getAllPostsForUserId(supabaseClient, profile.data.id)
+          .then(p => setPosts(p))
+    }, [profile])
+
+    if(!posts || !posts.data) return <div>Loading posts...</div>
+
     return (
         <Timeline>
-            {posts.map((post, key) => (
+            {posts.data.map((post, key) => (
                 <Timeline.Item>
                     <Timeline.Point icon={HiCalendar}/>
                     <Timeline.Content>
@@ -82,9 +100,9 @@ function PostsTimeline({posts}: {posts: IPost[]}) {
                             {post.title}
                         </Timeline.Title>
                         <Timeline.Body>
-                            {post.content.substring(0, 100)}
+                            {post.content?.substring(0, 100)}
                         </Timeline.Body>
-                        <Link href={`/post/${post._id}`}>
+                        <Link href={`/post/${post.id}`}>
                             <Button color="gray">
                                 Read More
                                 <HiArrowNarrowRight className="ml-2 h-3 w-3"/>

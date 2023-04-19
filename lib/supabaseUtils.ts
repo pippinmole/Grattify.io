@@ -1,65 +1,61 @@
 import {Session} from "@supabase/auth-helpers-react";
-import {supabase} from "./supabaseClient";
-import {Post, PostError, Profile, ProfileError} from "../models/types";
 import {User} from "@supabase/gotrue-js";
-
-export interface IPost {
-  post: Post;
-  author: Profile | null;
-  error: ProfileError & PostError
-}
+import {SupabaseClient} from "@supabase/supabase-js";
+import {supabase} from "./supabaseClient";
+import {Database} from "../models/schema";
 
 export async function getProfile(
-  session: Session | null
+  supabase: SupabaseClient<Database>,
+  session: Session
 ) {
-  // get profile and profile_info
-  const {data: profile} = await supabase
+  return supabase
     .from("profiles")
     .select(`*`)
     .eq("id", session?.user.id)
     .maybeSingle();
-
-  return {
-    profile,
-    session,
-  };
 }
 
 export async function getTodaysPost(
+  supabase: SupabaseClient<Database>,
   session: Session | null
-): Promise<IPost> {
+) {
 
   if(!session || !session.user) {
-    return {
-      post: null,
-      author: null,
-      error: null,
-    }
+    return null
   }
 
-  // const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const {
-    data: posts,
-    error: postsError
-  } = await supabase.from('posts')
-    .select('*')
+  return supabase
+    .from('posts')
+    .select("*, author_id (*)")
     .eq('author_id', session?.user.id)
+    .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
     .maybeSingle()
+}
 
-  const {
-    data: profile,
-    error: profileError
-  } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', session?.user.id)
-    .maybeSingle()
+export async function getAllPosts<T>(
+  supabase: SupabaseClient<Database>
+) {
+  return supabase
+    .from('posts')
+    .select(`*, author_id (*)`)
+}
 
-  return {
-    post: posts as Post,
-    author: profile as Profile,
-    error: postsError ? postsError : profileError ? profileError : null
-  }
+export async function getAllPostsForSession(
+  supabase: SupabaseClient<Database>,
+  session: Session
+) {
+  return getAllPostsForUserId(supabase, session?.user.id);
+}
+
+export async function getAllPostsForUserId(
+  supabase: SupabaseClient<Database>,
+  id: string
+) {
+
+  return supabase
+    .from('posts')
+    .select(`*, author_id (*)`)
+    .eq('author_id', id)
 }
 
 supabase.auth.onAuthStateChange(async (event, session) => {
@@ -67,10 +63,10 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 
   if(!session?.user) return
 
-  await createProfile(session?.user);
+  await createProfile(supabase, session?.user);
 });
 
-const createProfile = async (user: User) => {
+const createProfile = async (supabase: SupabaseClient<Database>, user: User) => {
   return supabase
     .from("profiles")
     .insert({

@@ -1,26 +1,29 @@
 import Layout from "../components/layout";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import PostTile from "../components/posts/PostTile";
 import PostTileContainer from "../components/posts/PostTileContainer";
-import useSWR from "swr";
-import fetcher from "../lib/fetch";
-import PostTileSkeleton from "../components/posts/PostTileSkeleton";
-import {toast} from "react-toast";
-import {useUser} from "@supabase/auth-helpers-react";
-import {PostResponse} from "../models/types";
-import {IPost} from "../lib/supabaseUtils";
+import {useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
+import {getAllPosts} from "../lib/supabaseUtils";
+import {Database} from "../models/schema";
+import {PostResponse, PostResponseArray} from "../models/types";
 
 export default function DiscoverPage() {
   const user = useUser()
-  const {data, error, isLoading} = useSWR<IPost[]>(
-    user ? `/api/post/all` : null, fetcher
-  )
+  const supabaseClient = useSupabaseClient<Database>()
+  const [data, setData] = useState<PostResponseArray>();
 
   useEffect(() => {
-    if (error) {
-      toast.error(error.message)
-    }
-  }, [error])
+
+    getAllPosts(supabaseClient)
+      .then(data => setData(data))
+
+  }, [])
+
+  // useEffect(() => {
+  //   if (data) {
+  //     toast.error(error.message)
+  //   }
+  // }, [data])
 
   return (
     <>
@@ -33,10 +36,10 @@ export default function DiscoverPage() {
       </p>
 
       <PostTileContainer>
-        {isLoading && [1, 2, 3].map((key) => <PostTileSkeleton key={key}></PostTileSkeleton>)}
+        {/*{isLoading && [1, 2, 3].map((key) => <PostTileSkeleton key={key}></PostTileSkeleton>)}*/}
 
         {data && data.data?.map((post, key) => <PostTile post={post} key={key}></PostTile>)}
-        {data?.length === 0 && <>No posts!</>}
+        {data && data.data?.length === 0 && <>No posts!</>}
       </PostTileContainer>
     </>
   )

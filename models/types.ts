@@ -1,18 +1,33 @@
-import {supabase} from "../lib/supabaseClient";
 import {User} from "@supabase/gotrue-js";
 import {Database} from "./schema";
+import {Session} from "@supabase/auth-helpers-react";
+import {SupabaseClient} from "@supabase/supabase-js";
 
-export function getPosts() {
+export function getPost(
+  supabase: SupabaseClient<Database>,
+) {
   return supabase
     .from('posts')
     .select('*')
     .single();
 }
 
-export async function getProfile() {
+export function getPosts(
+  supabase: SupabaseClient<Database>,
+) {
+  return supabase
+    .from('posts')
+    .select('*')
+}
+
+export async function getProfile(
+  supabase: SupabaseClient<Database>,
+  session: Session
+) {
   return supabase.from('profiles')
     .select('*')
-    .single();
+    .eq('id', session?.user.id)
+    .maybeSingle();
 }
 
 export type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
@@ -22,10 +37,6 @@ export interface UserProfile {
   profile: Profiles;
 }
 
-export type PostResponse = Awaited<ReturnType<typeof getPosts>>
-export type Post = PostResponse['data']
-export type PostError = PostResponse['error']
-
+export type PostResponse = Awaited<ReturnType<typeof getPost>>
+export type PostResponseArray = Awaited<ReturnType<typeof getPosts>>
 export type ProfileResponse = Awaited<ReturnType<typeof getProfile>>
-export type Profile = ProfileResponse['data']
-export type ProfileError = ProfileResponse['error']

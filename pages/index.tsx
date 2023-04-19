@@ -1,12 +1,14 @@
 import Layout from "../components/layout"
 import React, {useEffect, useState} from "react";
 import {CreatePost, ExistingPost, RecentPosts} from "../components/index";
-import {useSession, useUser} from "@supabase/auth-helpers-react";
-import {getTodaysPost, IPost} from "../lib/supabaseUtils";
+import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
+import {getTodaysPost} from "../lib/supabaseUtils";
 import {toast} from "react-toast";
+import {PostResponse} from "../models/types";
 
 export default function IndexPage() {
-  const [post, setPost] = useState<IPost | null>(null);
+  const supabaseClient = useSupabaseClient()
+  const [post, setPost] = useState<PostResponse>();
   const user = useUser();
   const session = useSession()
 
@@ -19,12 +21,12 @@ export default function IndexPage() {
 
   // Refresh today's post if the user session changes
   useEffect(() => {
-    getTodaysPost(session).then(setPost);
+    getTodaysPost(supabaseClient, session).then(r => setPost(r));
   },[session])
 
   return (
     <>
-      {post?.post ? <ExistingPost post={post}/> : <CreatePost/>}
+      {post?.data ? <ExistingPost post={post}/> : <CreatePost/>}
 
       <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
 

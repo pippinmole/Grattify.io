@@ -1,9 +1,9 @@
 import Moment from "react-moment";
 import {Avatar} from "flowbite-react";
 import React from "react";
-import {Profile} from "../../models/types";
+import {ProfileResponse} from "../../models/types";
 
-export default function UserProfile({profile}: {profile: Profile}) {
+export default function UserProfile({profile}: {profile: ProfileResponse['data']}) {
     return (
         <Avatar img={profile?.profile_picture} rounded={true}>
             <div className="space-y-1 font-medium dark:text-white">

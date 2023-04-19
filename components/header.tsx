@@ -2,14 +2,25 @@ import Link from "next/link"
 import ThemeSwitch from "./ThemeSwitch";
 import siteMetadata from '../data/siteMetadata'
 import headerNavLinks from '../data/navLinks'
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Avatar, Dropdown, Navbar} from "flowbite-react";
-import {useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
+import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
 import {User} from "@supabase/gotrue-js";
+import {getProfile, ProfileResponse} from "../models/types";
 
 export default function Header() {
   const user = useUser();
+  const session = useSession();
   const supabaseClient = useSupabaseClient()
+
+  const [profile, setProfile] = useState<ProfileResponse>()
+
+  useEffect(() => {
+    if (!session) return
+
+    getProfile(supabaseClient, session)
+      .then(p => setProfile(p))
+  }, [session])
 
   return (
     <Navbar fluid={false} rounded={true}>
@@ -25,8 +36,7 @@ export default function Header() {
         <Dropdown
           arrowIcon={false}
           inline={true}
-          label={<Avatar alt="User settings"
-                         img={UserImageOrDefault(user)} rounded={true}/>}
+          label={<Avatar alt="User settings" img={UserImageOrDefault(profile?.data)} rounded={true}/>}
         >
 
           {user
@@ -104,7 +114,7 @@ const AuthorizedDropdown = ({user, signOut}: {
                     Sign out
                 </Dropdown.Item>
         ) : (
-            <Link href="/api/auth/signin">
+            <Link href="/login">
                 <Dropdown.Header>
                     Sign in
                 </Dropdown.Header>
@@ -113,11 +123,10 @@ const AuthorizedDropdown = ({user, signOut}: {
     </>
 );
 
-function UserImageOrDefault(user: User | null): string {
-  return "https://flowbite.com/docs/images/logo.svg"
-  // if (!user || !user.image) {
-  //     return "https://flowbite.com/docs/images/logo.svg";
-  // }
-  //
-  // return user.image
+function UserImageOrDefault(profile: ProfileResponse['data'] | undefined): string {
+  if (!profile || !profile.profile_picture) {
+      return "https://flowbite.com/docs/images/logo.svg";
+  }
+
+  return profile.profile_picture
 }

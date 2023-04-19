@@ -2,7 +2,9 @@ import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
 import {toast} from "react-toast";
 import {Button, Label, Spinner, Textarea, TextInput} from "flowbite-react";
-import {useUser} from "@supabase/auth-helpers-react";
+import {useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
+import {Database} from "../../models/schema";
+import {PostgrestError} from "@supabase/postgrest-js";
 
 interface IPostForm {
     title: string
@@ -12,7 +14,8 @@ interface IPostForm {
 export default function CreatePost() {
     const {push} = useRouter();
     const user = useUser();
-    const [error, setError] = useState<any>(null)
+    const supabaseClient = useSupabaseClient<Database>()
+    const [error, setError] = useState<PostgrestError>()
     const [submitting, setSubmitting] = useState(false)
     const [formData, setFormData] = useState<IPostForm>({
         title: '',
@@ -36,21 +39,22 @@ export default function CreatePost() {
         }
 
         setSubmitting(true)
-        setError(null)
 
-        const response = await fetch('/api/post/new', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        })
-        const data = await response.json()
+        const { data, error} = await supabaseClient
+          .from('posts')
+          .insert({
+              author_id: user.id,
+              title: formData.title,
+              content: formData.content,
+              images: []
+          })
+          .select()
+          .maybeSingle()
 
-        if (response.ok) {
-            await push(`post/${data.id}`)
+        if (error) {
+            setError(error)
         } else {
-            setError(data)
+            await push(`/post/${data?.id}`)
         }
 
         setSubmitting(false)
