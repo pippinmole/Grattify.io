@@ -4,12 +4,12 @@ import Link from "next/link";
 import {Button} from "flowbite-react";
 import {HiOutlineArrowRight} from "react-icons/hi";
 import React from "react";
-import {PostResponseSuccess} from "../../models/types";
+import {IPost} from "../../lib/supabaseUtils";
 
-export default function ExistingPost({post}: {post: PostResponseSuccess}) {
+export default function ExistingPost({post}: {post: IPost}) {
   const {push} = useRouter()
 
-  if(!post) {
+  if(!post || !post.post  ) {
     return <>Loading...</>
   }
 
@@ -23,9 +23,9 @@ export default function ExistingPost({post}: {post: PostResponseSuccess}) {
         Posts can be made every 24 hours. Please wait until the time has elapsed. 😃
       </p>
 
-      <Countdown from={NextPostAllowed(post.created_at)} onFinished={() => push('/')}></Countdown>
+      <Countdown from={NextPostAllowed(post.post.created_at)} onFinished={() => push('/')}></Countdown>
 
-      <Link href={`/post/${post.id}`}>
+      <Link href={`/post/${post.post.id}`}>
         <Button className="my-8 mx-auto">
           View today's post
           <HiOutlineArrowRight className="ml-2 h-5 w-5"/>

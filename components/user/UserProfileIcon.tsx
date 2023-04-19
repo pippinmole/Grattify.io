@@ -1,17 +1,26 @@
 import {Avatar} from "flowbite-react";
 import React from "react";
 import Link from "next/link";
-import {User} from "@supabase/gotrue-js";
+import {IPost} from "../../lib/supabaseUtils";
 
-export default function UserProfileIcon({user}: {user: User}) {
+export default function UserProfileIcon({profile}: {profile: IPost['author']}) {
+
+  if(!profile) {
     return (
-        <Link href={`/user/${user.id}`}>
-            <div className="flex flex-wrap gap-2">
-                <Avatar
-                    img={user.image ?? "https://flowbite.com/docs/images/people/profile-picture-5.jpg"}
-                    rounded={true}
-                />
-            </div>
-        </Link>
+      <>
+        Loading profile...
+        {
+          // TODO: Add loading animation
+        }
+      </>
     )
+  }
+
+  return (
+    <Link href={`/user/${profile?.id}`}>
+      <div className="flex flex-wrap gap-2">
+        <Avatar img={profile?.profile_picture} rounded={true}/>
+      </div>
+    </Link>
+  )
 }

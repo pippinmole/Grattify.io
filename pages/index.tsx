@@ -1,48 +1,36 @@
 import Layout from "../components/layout"
-import React from "react";
-import {GetServerSideProps} from "next";
+import React, {useEffect, useState} from "react";
 import {CreatePost, ExistingPost, RecentPosts} from "../components/index";
-import {createServerSupabaseClient} from "@supabase/auth-helpers-nextjs";
-import {useUser} from "@supabase/auth-helpers-react";
-import {PostResponse, PostResponseSuccess} from "../models/types";
+import {useSession, useUser} from "@supabase/auth-helpers-react";
+import {getTodaysPost, IPost} from "../lib/supabaseUtils";
+import {toast} from "react-toast";
 
-export default function IndexPage({post}: { post: PostResponse }) {
-    const user = useUser()
+export default function IndexPage() {
+  const [post, setPost] = useState<IPost | null>(null);
+  const user = useUser();
+  const session = useSession()
 
-    return (
-        <>
-           {post ? <ExistingPost post={post["data"] as PostResponseSuccess}/> : <CreatePost/>}
-
-            <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
-
-            <RecentPosts user={user}/>
-        </>
-    )
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-
-  // Create authenticated Supabase Client
-  const supabase = createServerSupabaseClient(context)
-  // Check if we have a session
-  const {
-    data: {session},
-  } = await supabase.auth.getSession()
-
-  // Find all posts pertaining to a user
-  // const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const {data} = await supabase.from('posts')
-    .select('*')
-    .eq('author', session?.user.id)
-    .maybeSingle()
-
-  console.log(data)
-
-  return {
-    props: {
-      post: data
+  // Show error if we fail to get the post
+  useEffect(() => {
+    if(post?.error) {
+      toast.error(post.error.message)
     }
-  };
+  }, [post])
+
+  // Refresh today's post if the user session changes
+  useEffect(() => {
+    getTodaysPost(session).then(setPost);
+  },[session])
+
+  return (
+    <>
+      {post?.post ? <ExistingPost post={post}/> : <CreatePost/>}
+
+      <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
+
+      <RecentPosts user={user}/>
+    </>
+  )
 }
 
 IndexPage.getLayout = function getLayout(page: React.ReactNode) {

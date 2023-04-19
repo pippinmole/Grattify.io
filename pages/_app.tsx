@@ -3,10 +3,10 @@ import "./styles.css"
 import type { AppProps } from "next/app"
 import {ThemeProvider} from "next-themes";
 import {NextPage} from "next";
-import React, {ReactElement, ReactNode, useState} from "react";
+import React, {ReactElement, ReactNode, useEffect, useState} from "react";
 import NextNProgress from 'nextjs-progressbar';
 import {createBrowserSupabaseClient} from "@supabase/auth-helpers-nextjs";
-import {SessionContextProvider, Session} from "@supabase/auth-helpers-react";
+import {SessionContextProvider, Session, useUser} from "@supabase/auth-helpers-react";
 import {ToastContainer} from "react-toast";
 import {Analytics} from "@vercel/analytics/react";
 
@@ -26,6 +26,12 @@ export default function App({
 
   // Create a new supabase browser client on every first render.
   const [supabaseClient] = useState(() => createBrowserSupabaseClient())
+
+  const user = useUser();
+
+  useEffect(() => {
+    console.log("User is now: ", user)
+  }, [user])
 
   return (
     <SessionContextProvider

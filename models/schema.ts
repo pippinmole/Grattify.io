@@ -11,7 +11,7 @@ export interface Database {
     Tables: {
       posts: {
         Row: {
-          author: string | null
+          author_id: string | null
           content: string | null
           created_at: string | null
           id: number
@@ -19,7 +19,7 @@ export interface Database {
           title: string | null
         }
         Insert: {
-          author?: string | null
+          author_id?: string | null
           content?: string | null
           created_at?: string | null
           id?: number
@@ -27,12 +27,35 @@ export interface Database {
           title?: string | null
         }
         Update: {
-          author?: string | null
+          author_id?: string | null
           content?: string | null
           created_at?: string | null
           id?: number
           images?: string[]
           title?: string | null
+        }
+      }
+      profiles: {
+        Row: {
+          bio: string
+          created_at: string
+          id: string
+          profile_picture: string
+          username: string
+        }
+        Insert: {
+          bio?: string
+          created_at?: string
+          id: string
+          profile_picture?: string
+          username: string
+        }
+        Update: {
+          bio?: string
+          created_at?: string
+          id?: string
+          profile_picture?: string
+          username?: string
         }
       }
     }

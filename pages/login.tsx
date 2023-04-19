@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import {supabase} from "../lib/supabaseClient";
 import {AuthError, Provider} from "@supabase/gotrue-js";
 import {toast} from "react-toast";
 import {AiFillGithub} from "react-icons/ai";
-import {Button} from "flowbite-react";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface ILoginForm {
   email: string
@@ -12,6 +11,8 @@ interface ILoginForm {
 }
 
 export default function Login() {
+
+  const supabaseClient = useSupabaseClient();
 
   const {push} = useRouter();
   const [error, setError] = useState<AuthError | null>()
@@ -31,15 +32,18 @@ export default function Login() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    supabase.auth.signInWithPassword({
+    supabaseClient.auth.signInWithPassword({
       email: form.email,
       password: form.password,
     })
       .then(({data, error}) => {
+        const {user, session} = data
+
         setError(error)
 
         // If we successfully logged in, redirect!
         if(data.user) {
+          toast.success(`Welcome back ${user?.email}!`)
           push('/')
         }
       })
@@ -126,12 +130,13 @@ export default function Login() {
 
 function SocialLogins() {
 
+  const supabaseClient = useSupabaseClient()
   const [error, setError] = useState<AuthError | null>();
 
   const handleOauthButton = (e: React.UIEvent<HTMLButtonElement>) => {
     const {name} = e.target as HTMLButtonElement;
 
-    supabase.auth.signInWithOAuth({
+    supabaseClient.auth.signInWithOAuth({
       provider: name as Provider,
     })
       .then(({data, error}) => {
