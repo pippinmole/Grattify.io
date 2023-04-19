@@ -1,13 +1,12 @@
 import React, {useEffect} from "react";
 import useSWR from "swr";
-import {IPost} from "../../models/post";
 import fetcher from "../../lib/fetch";
 import {toast} from "react-toast";
 import {PostTile, PostTileContainer, PostTileSkeleton} from "../posts";
-import {CustomUser} from "../../types/next-auth";
+import {User} from "@supabase/gotrue-js";
 
-export default function RecentPosts({user}: {user: CustomUser | undefined}) {
-    const {data, error, isLoading} = useSWR<IPost[]>(
+export default function RecentPosts({user}: {user: User | null}) {
+    const {data, error, isLoading} = useSWR<any>(
         user ? `/api/user/${user.id}/posts` : null, fetcher
     )
 
@@ -41,7 +40,7 @@ export default function RecentPosts({user}: {user: CustomUser | undefined}) {
     )
 }
 
-function PostTiles({data}: {data: IPost[] | undefined}) {
+function PostTiles({data}: {data: any[] | undefined}) {
     if (!data || data.length === 0) {
         return (
             <p className="font-medium text-gray-900 dark:text-white text-center m-auto my-8">

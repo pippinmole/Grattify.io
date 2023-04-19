@@ -1,16 +1,14 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import Post from "../../../models/post";
-import dbConnect from "../../../lib/mongoose";
-import User from "../../../models/user";
+import {supabase} from "../../../lib/supabaseClient";
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    await dbConnect();
+    const {data} = await supabase
+      .from('posts')
+      .select('*')
+      .order('created_at', {ascending: false});
 
-    const x = await User.find()
-    const result = await Post.find().populate('author').lean()
-
-    res.send(JSON.stringify(result, null, 2))
+    res.send(data)
 }

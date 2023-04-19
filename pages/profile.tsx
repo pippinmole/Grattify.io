@@ -1,20 +1,18 @@
 import React from "react";
 import Layout from "../components/layout";
-import {useSession} from "next-auth/react";
 import AccessDenied from "../components/access-denied";
-import {IPost} from "../models/post";
 import {Avatar, Button, Tabs, Timeline} from "flowbite-react";
 import {HiArrowNarrowRight, HiCalendar} from "react-icons/hi";
 import useSWR from "swr";
 import fetcher from "../lib/fetch";
 import Link from "next/link";
-import {CustomUser} from "../types/next-auth";
+import {useUser} from "@supabase/auth-helpers-react";
 
 export default function Profile() {
-    const {data: session} = useSession()
+    const user = useUser()
 
     // If no session exists, display access denied message
-    if (!session) {
+    if (!user) {
         return (
             <Layout>
                 <AccessDenied/>
@@ -25,14 +23,14 @@ export default function Profile() {
     return (
         <Layout>
             <Avatar
-                img={session.user.image ?? "https://i.pravatar.cc/300"}
+                img={user.image ?? "https://i.pravatar.cc/300"}
                 rounded={true}
                 size={"xl"}
                 className="w-fit mb-8 my-2"
             >
                 <div className="space-y-1 font-medium dark:text-white">
                     <div>
-                        {session.user.name}
+                        {user.email}
                     </div>
                     {/*<div className="text-sm text-gray-500 dark:text-gray-400">*/}
                     {/*    Joined in August 2014*/}
@@ -43,7 +41,7 @@ export default function Profile() {
                 </div>
             </Avatar>
 
-            <ProfileTabs user={session.user} />
+            <ProfileTabs user={user} />
         </Layout>
     )
 }

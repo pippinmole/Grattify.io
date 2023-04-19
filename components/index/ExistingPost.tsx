@@ -1,38 +1,42 @@
-import {IPost} from "../../models/post";
 import {useRouter} from "next/router";
 import Countdown from "../countdown/Countdown";
 import Link from "next/link";
 import {Button} from "flowbite-react";
 import {HiOutlineArrowRight} from "react-icons/hi";
 import React from "react";
+import {PostResponseSuccess} from "../../models/types";
 
-export default function ExistingPost({post}: {post: IPost}) {
+export default function ExistingPost({post}: {post: PostResponseSuccess}) {
+  const {push} = useRouter()
 
-    const {push} = useRouter()
+  if(!post) {
+    return <>Loading...</>
+  }
 
-    return (
-        <>
-            <h1 className="text-2xl font-medium title-font mb-4 tracking-widest text-center">
-                You've already posted today!
-            </h1>
+  return (
+    <>
+      <h1 className="text-2xl font-medium title-font mb-4 tracking-widest text-center">
+        You've already posted today!
+      </h1>
 
-            <p className="tracking-normal text-gray-500 md:text-sm dark:text-gray-400 text-center">
-                Posts can be made every 24 hours. Please wait until the time has elapsed. 😃
-            </p>
+      <p className="tracking-normal text-gray-500 md:text-sm dark:text-gray-400 text-center">
+        Posts can be made every 24 hours. Please wait until the time has elapsed. 😃
+      </p>
 
-            <Countdown from={NextPostAllowed(new Date(post.createdAt))} onFinished={() => push('/')}></Countdown>
+      <Countdown from={NextPostAllowed(post.created_at)} onFinished={() => push('/')}></Countdown>
 
-            <Link href={`/post/${post._id}`}>
-                <Button className="my-8 mx-auto">
-                    View today's post
-                    <HiOutlineArrowRight className="ml-2 h-5 w-5"/>
-                </Button>
-            </Link>
-        </>
-    )
+      <Link href={`/post/${post.id}`}>
+        <Button className="my-8 mx-auto">
+          View today's post
+          <HiOutlineArrowRight className="ml-2 h-5 w-5"/>
+        </Button>
+      </Link>
+    </>
+  )
 }
 
-function NextPostAllowed(date: Date): Date {
-    date.setHours(date.getHours() + 24)
-    return date
+function NextPostAllowed(dateStr: string | null): Date {
+  const date = new Date(dateStr ?? "1970-01-01T00:00:00.000Z")
+  date.setHours(date.getHours() + 24)
+  return date
 }

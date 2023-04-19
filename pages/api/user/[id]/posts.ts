@@ -1,22 +1,14 @@
-import dbConnect from "../../../../lib/mongoose";
-import Post, {IPost} from "../../../../models/post";
 import {NextApiRequest, NextApiResponse} from "next";
-import User from "../../../../models/user";
+import {supabase} from "../../../../lib/supabaseClient";
 
-async function getPostsByUserId(userId: string): Promise<IPost[]> {
-    await dbConnect();
+async function getPostsByUserId(userId: string) {
+    const {data} = await supabase
+      .from('posts')
+      .select('*')
+      .eq('author', userId)
+      .order('created_at', {ascending: false});
 
-    // const result = Post.find({}).populate('author');
-    // console.log("Start")
-    // result.lean().then(x=>console.log(x));
-    //
-    // console.log("End")
-    // return result.lean();
-
-    const x = await User.find();
-    const result = Post.find({ author: userId }).populate('author')
-
-    return result.lean();
+    return data
 }
 
 export default async function handler(

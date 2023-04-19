@@ -1,13 +1,9 @@
 import { Sidebar } from "flowbite-react";
-import {useSession} from "next-auth/react";
 import {HiChartPie, HiShoppingBag, HiUser} from "react-icons/hi";
 import {ReactNode} from "react";
 import Link from "next/link";
 
 export default function SettingsLayout({children}: {children: ReactNode}) {
-
-  // const {data: session} = useSession()
-
   return (
     <>
       <div className="md:flex flex-row">

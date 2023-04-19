@@ -1,4 +1,3 @@
-import {IPost} from "../../models/post";
 import Link from "next/link";
 import Moment from "react-moment";
 import Image from "next/image";
@@ -6,7 +5,7 @@ import UserProfileIcon from "../user/UserProfileIcon";
 import React from "react";
 import {HiArrowNarrowRight} from "react-icons/hi";
 
-export default function PostTile({post}: {post: IPost}) {
+export default function PostTile({post}: {post: any}) {
     return (
         <div className="p-4 md:w-1/3">
             <div className="h-full border-2 border-gray-200 dark:border-gray-600 border-opacity-60 rounded-lg overflow-hidden">
@@ -24,7 +23,7 @@ export default function PostTile({post}: {post: IPost}) {
                         {post.content.length > 35 ? `${post.content.slice(0, 35)}...` : post.content}
 
                         <Link className="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0 ml-2 text-sm"
-                              href={`/post/${post._id}`}>
+                              href={`/post/${post.id}`}>
                             Read More
 
                             <HiArrowNarrowRight className="ml-1 h-3 w-3"/>

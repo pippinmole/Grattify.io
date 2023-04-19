@@ -1,14 +1,13 @@
-import {CustomUser} from "../../types/next-auth";
 import Moment from "react-moment";
 import {Avatar} from "flowbite-react";
 import React from "react";
 
-export default function UserProfile({user}: {user: CustomUser}) {
+export default function UserProfile({user}: {user: any}) {
     return (
         <Avatar img={user.image ?? "https://flowbite.com/docs/images/people/profile-picture-5.jpg"} rounded={true}>
             <div className="space-y-1 font-medium dark:text-white">
                 <div>
-                    {user.name}
+                    {user.uid}
 
                     <span className="text-lime-100 text-xs ml-2">
                         Author

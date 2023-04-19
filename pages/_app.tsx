@@ -1,34 +1,45 @@
-import { SessionProvider } from "next-auth/react"
 import "./styles.css"
 
 import type { AppProps } from "next/app"
-import type { Session } from "next-auth"
 import {ThemeProvider} from "next-themes";
 import {NextPage} from "next";
-import {ReactElement, ReactNode} from "react";
+import React, {ReactElement, ReactNode, useState} from "react";
 import NextNProgress from 'nextjs-progressbar';
-import * as NProgress from "nprogress";
+import {createBrowserSupabaseClient} from "@supabase/auth-helpers-nextjs";
+import {SessionContextProvider, Session} from "@supabase/auth-helpers-react";
+import {ToastContainer} from "react-toast";
+import {Analytics} from "@vercel/analytics/react";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode
 }
 
-// Use of the <SessionProvider> is mandatory to allow components that call
-// `useSession()` anywhere in your application to access the `session` object.
 export default function App({
   Component,
-  pageProps: { session, ...pageProps },
-}: AppProps<{ session: Session }> & {Component: NextPageWithLayout}) {
+  pageProps: { initialSession, ...pageProps },
+}: AppProps<{
+  initialSession: Session
+}> & {Component: NextPageWithLayout}) {
 
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout || ((page) => page)
 
+  // Create a new supabase browser client on every first render.
+  const [supabaseClient] = useState(() => createBrowserSupabaseClient())
+
   return (
-    <SessionProvider session={session}>
+    <SessionContextProvider
+      supabaseClient={supabaseClient}
+      initialSession={initialSession}
+    >
       <ThemeProvider attribute="class">
+        <ToastContainer position="top-right"/>
         <NextNProgress options={{showSpinner: false}}/>
+
         {getLayout(<Component {...pageProps}/>)}
+
+        <Analytics />
       </ThemeProvider>
-    </SessionProvider>
+    </SessionContextProvider>
   )
 }

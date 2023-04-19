@@ -1,8 +1,8 @@
 import {useRouter} from "next/router";
-import {useSession} from "next-auth/react";
 import React, {useEffect, useState} from "react";
 import {toast} from "react-toast";
-import {Button, FileInput, Label, Spinner, Textarea, TextInput} from "flowbite-react";
+import {Button, Label, Spinner, Textarea, TextInput} from "flowbite-react";
+import {useUser} from "@supabase/auth-helpers-react";
 
 interface IPostForm {
     title: string
@@ -11,7 +11,7 @@ interface IPostForm {
 
 export default function CreatePost() {
     const {push} = useRouter();
-    const {data: session} = useSession()
+    const user = useUser();
     const [error, setError] = useState<any>(null)
     const [submitting, setSubmitting] = useState(false)
     const [formData, setFormData] = useState<IPostForm>({
@@ -30,8 +30,8 @@ export default function CreatePost() {
     async function submitDailyGratitude(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
 
-        if (!session?.user) {
-            await push('/api/auth/signin')
+        if (!user) {
+            await push('/login')
             return
         }
 
@@ -48,7 +48,7 @@ export default function CreatePost() {
         const data = await response.json()
 
         if (response.ok) {
-            await push(`post/${data._id}`)
+            await push(`post/${data.id}`)
         } else {
             setError(data)
         }

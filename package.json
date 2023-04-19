@@ -18,13 +18,12 @@
     "Lluis Agusti <hi@llu.lu>"
   ],
   "dependencies": {
-    "@next-auth/mongodb-adapter": "^1.1.1",
+    "@supabase/auth-helpers-nextjs": "^0.6.0",
+    "@supabase/auth-helpers-react": "^0.3.1",
+    "@vercel/analytics": "^0.1.11",
     "flowbite": "^1.6.5",
     "flowbite-react": "^0.4.3",
-    "mongodb": "^4.15.0",
-    "mongoose": "^7.0.3",
     "next": "13.2.3",
-    "next-auth": "^4.22.0",
     "next-themes": "^0.2.1",
     "next-transpile-modules": "^10.0.0",
     "nextjs-progressbar": "^0.0.16",
@@ -40,6 +39,7 @@
     "@types/react": "^18.0.15",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.21",
+    "supabase": "^1.50.8",
     "tailwindcss": "^3.3.1",
     "typescript": "^4"
   }

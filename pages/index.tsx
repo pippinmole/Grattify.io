@@ -1,50 +1,50 @@
 import Layout from "../components/layout"
 import React from "react";
-import { useSession } from "next-auth/react"
-import Post, {IPost} from "../models/post";
 import {GetServerSideProps} from "next";
-import dbConnect from "../lib/mongoose";
 import {CreatePost, ExistingPost, RecentPosts} from "../components/index";
-import {getServerSession} from "next-auth/next";
-import {authOptions} from "./api/auth/[...nextauth]";
+import {createServerSupabaseClient} from "@supabase/auth-helpers-nextjs";
+import {useUser} from "@supabase/auth-helpers-react";
+import {PostResponse, PostResponseSuccess} from "../models/types";
 
-export default function IndexPage({post}: { post: IPost }) {
-    const {data: session, status} = useSession()
-
-    post = JSON.parse(post as unknown as string) as IPost
+export default function IndexPage({post}: { post: PostResponse }) {
+    const user = useUser()
 
     return (
         <>
-            {post ? <ExistingPost post={post}/> : <CreatePost/>}
+           {post ? <ExistingPost post={post["data"] as PostResponseSuccess}/> : <CreatePost/>}
 
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
 
-            <RecentPosts user={session?.user}/>
+            <RecentPosts user={user}/>
         </>
     )
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    await dbConnect();
 
-    const session = await getServerSession(context.req, context.res, authOptions)
+  // Create authenticated Supabase Client
+  const supabase = createServerSupabaseClient(context)
+  // Check if we have a session
+  const {
+    data: {session},
+  } = await supabase.auth.getSession()
 
-    // Find all posts pertaining to a user
-    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const todaysPost = await Post.findOne({
-        createdAt: {
-            $gte: yesterday
-        },
-        author: session?.user.id
-    });
+  // Find all posts pertaining to a user
+  // const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const {data} = await supabase.from('posts')
+    .select('*')
+    .eq('author', session?.user.id)
+    .maybeSingle()
 
-    return {
-        props: {
-            post: JSON.stringify(todaysPost)
-        }
-    };
+  console.log(data)
+
+  return {
+    props: {
+      post: data
+    }
+  };
 }
 
 IndexPage.getLayout = function getLayout(page: React.ReactNode) {
-    return <Layout>{page}</Layout>
+  return <Layout>{page}</Layout>
 }
