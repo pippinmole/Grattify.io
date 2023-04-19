@@ -5,7 +5,7 @@ import PostTileContainer from "../components/posts/PostTileContainer";
 import {useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
 import {getAllPosts} from "../lib/supabaseUtils";
 import {Database} from "../models/schema";
-import {PostResponse, PostResponseArray} from "../models/types";
+import {PostResponse, PostResponseArray, PostResponseSuccess} from "../models/types";
 
 export default function DiscoverPage() {
   const user = useUser()
@@ -38,7 +38,7 @@ export default function DiscoverPage() {
       <PostTileContainer>
         {/*{isLoading && [1, 2, 3].map((key) => <PostTileSkeleton key={key}></PostTileSkeleton>)}*/}
 
-        {data && data.data?.map((post, key) => <PostTile post={post} key={key}></PostTile>)}
+        {data && data.data?.map((post, key) => <PostTile post={post as PostResponseSuccess} key={key}></PostTile>)}
         {data && data.data?.length === 0 && <>No posts!</>}
       </PostTileContainer>
     </>

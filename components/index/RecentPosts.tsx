@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {toast} from "react-toast";
 import {PostTile, PostTileContainer, PostTileSkeleton} from "../posts";
 import {User} from "@supabase/gotrue-js";
-import {PostResponse, PostResponseArray} from "../../models/types";
+import {PostResponseArray, PostResponseSuccess} from "../../models/types";
 import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
 import {getAllPostsForSession} from "../../lib/supabaseUtils";
 
@@ -61,7 +61,7 @@ function PostTiles({data}: {data: PostResponseArray['data']}) {
 
   return (
     <>
-      {data?.map((post, key) => <PostTile post={post} key={key}></PostTile>)}
+      {data.map((post, key) => <PostTile post={post as PostResponseSuccess} key={key}></PostTile>)}
     </>
   )
 }

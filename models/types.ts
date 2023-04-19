@@ -1,4 +1,3 @@
-import {User} from "@supabase/gotrue-js";
 import {Database} from "./schema";
 import {Session} from "@supabase/auth-helpers-react";
 import {SupabaseClient} from "@supabase/supabase-js";
@@ -9,7 +8,7 @@ export function getPost(
   return supabase
     .from('posts')
     .select('*')
-    .single();
+    .maybeSingle();
 }
 
 export function getPosts(
@@ -30,13 +29,11 @@ export async function getProfile(
     .maybeSingle();
 }
 
-export type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
-
-export interface UserProfile {
-  user: User;
-  profile: Profiles;
-}
-
 export type PostResponse = Awaited<ReturnType<typeof getPost>>
+export type PostResponseSuccess = PostResponse["data"] & {
+  author: Profiles
+}
 export type PostResponseArray = Awaited<ReturnType<typeof getPosts>>
+
+export type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 export type ProfileResponse = Awaited<ReturnType<typeof getProfile>>

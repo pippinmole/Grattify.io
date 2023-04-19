@@ -19,7 +19,6 @@ export async function getTodaysPost(
   supabase: SupabaseClient<Database>,
   session: Session | null
 ) {
-
   if(!session || !session.user) {
     return null
   }

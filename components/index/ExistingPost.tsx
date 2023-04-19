@@ -9,12 +9,8 @@ import {PostResponse} from "../../models/types";
 export default function ExistingPost({post}: {post: PostResponse}) {
   const {push} = useRouter()
 
-  if(!post  ) {
+  if(!post || !post.data) {
     return <>Loading...</>
-  }
-
-  if(post.error) {
-    return <>Error: {post.error.message}</>
   }
 
   return (

@@ -4,9 +4,9 @@ import Image from "next/image";
 import UserProfileIcon from "../user/UserProfileIcon";
 import React from "react";
 import {HiArrowNarrowRight} from "react-icons/hi";
-import {PostResponse} from "../../models/types";
+import {PostResponseSuccess} from "../../models/types";
 
-export default function PostTile({post}: {post: PostResponse['data']}) {
+export default function PostTile({post}: {post: PostResponseSuccess}) {
     if (!post) {
         return <>Loading...</>
     }

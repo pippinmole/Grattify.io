@@ -5,9 +5,10 @@ import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-rea
 import {getTodaysPost} from "../lib/supabaseUtils";
 import {toast} from "react-toast";
 import {PostResponse} from "../models/types";
+import {Database} from "../models/schema";
 
 export default function IndexPage() {
-  const supabaseClient = useSupabaseClient()
+  const supabaseClient = useSupabaseClient<Database>()
   const [post, setPost] = useState<PostResponse>();
   const user = useUser();
   const session = useSession()
@@ -21,7 +22,8 @@ export default function IndexPage() {
 
   // Refresh today's post if the user session changes
   useEffect(() => {
-    getTodaysPost(supabaseClient, session).then(r => setPost(r));
+    getTodaysPost(supabaseClient, session)
+      .then(r => setPost(r as PostResponse))
   },[session])
 
   return (

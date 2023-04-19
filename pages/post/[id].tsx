@@ -15,7 +15,7 @@ function PostPage({ post }: { post: PostResponseSuccess }) {
 
     return (
       <>
-          {post.author && <UserProfile user={post.author}/>}
+          {post.author && <UserProfile profile={post.author}/>}
 
           <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"/>
 
