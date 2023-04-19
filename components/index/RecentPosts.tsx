@@ -5,6 +5,7 @@ import {User} from "@supabase/gotrue-js";
 import {PostResponseArray, PostResponseSuccess} from "../../models/types";
 import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
 import {getAllPostsForSession} from "../../lib/supabaseUtils";
+import Link from "next/link";
 
 export default function RecentPosts({user}: {user: User | null}) {
 
@@ -13,12 +14,13 @@ export default function RecentPosts({user}: {user: User | null}) {
   const [posts, setPosts] = useState<PostResponseArray>()
 
   useEffect(() => {
-    if(!session) return
+    if(!session) {
+      setPosts(undefined)
+      return
+    }
 
     getAllPostsForSession(supabaseClient, session)
-      .then((posts) => {
-        setPosts(posts)
-      });
+      .then((posts) => setPosts(posts))
   }, [session])
 
   useEffect(() => {
@@ -42,7 +44,11 @@ export default function RecentPosts({user}: {user: User | null}) {
         {posts?.data && <PostTiles data={posts.data}/>}
         {!session && (
           <p className="font-medium text-gray-900 dark:text-white text-center m-auto my-8">
-            🧑 Sign in to see your posts!
+            {" 🧑 "}
+            <Link href="/login">
+              Sign in
+            </Link>
+            {" to see your posts!"}
           </p>
         )}
       </PostTileContainer>

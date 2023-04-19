@@ -17,7 +17,7 @@ export async function getProfile(
 
 export async function getTodaysPost(
   supabase: SupabaseClient<Database>,
-  session: Session | null
+  session: Session
 ) {
   if(!session || !session.user) {
     return null
@@ -26,7 +26,7 @@ export async function getTodaysPost(
   return supabase
     .from('posts')
     .select("*, author_id (*)")
-    .eq('author_id', session?.user.id)
+    .eq('author_id', session.user.id)
     .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
     .maybeSingle()
 }
@@ -50,7 +50,6 @@ export async function getAllPostsForUserId(
   supabase: SupabaseClient<Database>,
   id: string
 ) {
-
   return supabase
     .from('posts')
     .select(`*, author_id (*)`)

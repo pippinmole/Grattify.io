@@ -22,6 +22,11 @@ export default function IndexPage() {
 
   // Refresh today's post if the user session changes
   useEffect(() => {
+    if(!session) {
+      setPost(undefined)
+      return
+    }
+
     getTodaysPost(supabaseClient, session)
       .then(r => setPost(r as PostResponse))
   },[session])

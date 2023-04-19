@@ -5,7 +5,7 @@ import {Avatar, Button, Tabs, Timeline} from "flowbite-react";
 import {HiArrowNarrowRight, HiCalendar} from "react-icons/hi";
 import Link from "next/link";
 import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
-import {getAllPostsForSession, getAllPostsForUserId, getProfile} from "../lib/supabaseUtils";
+import {getAllPostsForUserId, getProfile} from "../lib/supabaseUtils";
 import {Database} from "../models/schema";
 import {PostResponseArray, ProfileResponse} from "../models/types";
 
@@ -74,7 +74,6 @@ function ProfileTabs({profile}: {profile: ProfileResponse}) {
 }
 
 function PostsTimeline({profile}: {profile: ProfileResponse}) {
-
     const supabaseClient = useSupabaseClient();
     const [posts, setPosts] = useState<PostResponseArray>()
 
