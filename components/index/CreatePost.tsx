@@ -23,6 +23,11 @@ export default function CreatePost() {
     });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if(!user) {
+            push('/login')
+            return
+        }
+
         const {name, value} = event.target;
         setFormData({
             ...formData,
