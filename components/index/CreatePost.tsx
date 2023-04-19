@@ -1,26 +1,41 @@
 import {useRouter} from "next/router";
 import React, {useEffect, useState} from "react";
 import {toast} from "react-toast";
-import {Button, Label, Spinner, Textarea, TextInput} from "flowbite-react";
-import {useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
+import {Button, FileInput, Label, Spinner, Textarea, TextInput} from "flowbite-react";
+import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
 import {Database} from "../../models/schema";
 import {PostgrestError} from "@supabase/postgrest-js";
+import {createPost} from "../../lib/supabaseUtils";
+import {uploadFiles} from "../../lib/supabaseFileUtils";
+import {StorageError} from "@supabase/storage-js";
 
-interface IPostForm {
+export interface IPostForm {
     title: string
     content: string
+    files: FileList | null
 }
 
 export default function CreatePost() {
     const {push} = useRouter();
     const user = useUser();
+    const session = useSession();
     const supabaseClient = useSupabaseClient<Database>()
-    const [error, setError] = useState<PostgrestError>()
+    const [error, setError] = useState<PostgrestError | StorageError | null>()
     const [submitting, setSubmitting] = useState(false)
-    const [formData, setFormData] = useState<IPostForm>({
+    const [form, setForm] = useState<IPostForm>({
         title: '',
-        content: ''
+        content: '',
+        files: null
     });
+
+    const handleFiles = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const {files} = event.target;
+
+        setForm({
+            ...form,
+            files: files
+        });
+    }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if(!user) {
@@ -29,8 +44,9 @@ export default function CreatePost() {
         }
 
         const {name, value} = event.target;
-        setFormData({
-            ...formData,
+
+        setForm({
+            ...form,
             [name]: value,
         });
     };
@@ -38,28 +54,35 @@ export default function CreatePost() {
     async function submitDailyGratitude(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
 
-        if (!user) {
+        if (!user || !session) {
             await push('/login')
             return
         }
 
         setSubmitting(true)
 
-        const { data, error} = await supabaseClient
-          .from('posts')
-          .insert({
-              author_id: user.id,
-              title: formData.title,
-              content: formData.content,
-              images: []
-          })
-          .select()
-          .maybeSingle()
+        const fileResult = await uploadFiles(
+          supabaseClient, "media", "post_media", form.files
+        )
 
-        if (error) {
-            setError(error)
+        const fileError = fileResult.find(x => x.error);
+        if(fileError) {
+            setError(fileError.error)
+            setSubmitting(false)
         } else {
-            await push(`/post/${data?.id}`)
+            const files = fileResult
+              .filter(x => x && x.data)
+              .map(file => file.data!.publicUrl);
+
+            const postResult = await createPost(
+              supabaseClient, session, form, files
+            );
+
+            if (!error) {
+                await push(`/post/${postResult.data?.id}`)
+            } else {
+                setError(error)
+            }
         }
 
         setSubmitting(false)
@@ -67,6 +90,7 @@ export default function CreatePost() {
 
     useEffect(() => {
         if (error) {
+            toast.hideAll()
             toast.error(error?.message)
         }
     }, [error])
@@ -93,7 +117,7 @@ export default function CreatePost() {
                         type="text"
                         name="title"
                         placeholder="I am grateful for Karl Pilkington..."
-                        value={formData.title}
+                        value={form.title}
                         onChange={handleChange}
                         required={true}/>
                 </div>
@@ -108,10 +132,25 @@ export default function CreatePost() {
                         rows={6}
                         className="text-sm"
                         placeholder="... because he is clueless"
-                        value={formData.content}
+                        value={form.content}
                         onChange={handleChange}
                         required={true}
                     />
+                </div>
+
+                <div id="fileUpload">
+                    <div className="mb-2 block">
+                        <Label
+                          htmlFor="file"
+                          value="Upload file"
+                        />
+                    </div>
+                    <FileInput
+                      id="file"
+                      name="files"
+                      onChange={handleFiles}
+                      helperText="Attach media to your post"
+                      multiple={true}/>
                 </div>
 
                 <div>

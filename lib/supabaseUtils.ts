@@ -3,6 +3,8 @@ import {User} from "@supabase/gotrue-js";
 import {SupabaseClient} from "@supabase/supabase-js";
 import {supabase} from "./supabaseClient";
 import {Database} from "../models/schema";
+import {IPostForm} from "../components/index/CreatePost";
+import {uploadFiles} from "./supabaseFileUtils";
 
 export async function getProfile(
   supabase: SupabaseClient<Database>,
@@ -54,6 +56,25 @@ export async function getAllPostsForUserId(
     .from('posts')
     .select(`*, author_id (*)`)
     .eq('author_id', id)
+}
+
+export async function createPost(
+  supabase: SupabaseClient<Database>,
+  session: Session,
+  form: IPostForm,
+  files: string[]
+) {
+
+  return supabase
+    .from('posts')
+    .insert({
+      author_id: session.user.id,
+      title: form.title,
+      content: form.content,
+      images: files
+    })
+    .select()
+    .maybeSingle()
 }
 
 supabase.auth.onAuthStateChange(async (event, session) => {

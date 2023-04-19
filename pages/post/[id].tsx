@@ -9,40 +9,40 @@ import {PostResponseSuccess} from "../../models/types";
 
 function PostPage({ post }: { post: PostResponseSuccess }) {
 
-  if(!post){
+  if (!post) {
     return <>Loading...</>
   }
 
-    return (
-      <>
-          {post.author && <UserProfile profile={post.author}/>}
+  return (
+    <>
+      {post.author && <UserProfile profile={post.author}/>}
 
-          <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"/>
+      <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"/>
 
-          {post.images?.length > 0 && (
-            <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
-                <Carousel>
-                    {post.images?.map((src, index) => (
-                      <Image
-                        src={src}
-                        alt="..."
-                        width={1}
-                        height={1}
-                        key={index}
-                      />
-                    ))}
-                </Carousel>
-            </div>
-          )}
+      {post.images.length > 0 && (
+        <div className="h-56 sm:h-64 xl:h-80 2xl:h-96 mb-4">
+          <Carousel>
+            {post.images?.map((src, index) => (
+              <Image
+                src={src}
+                alt="..."
+                width={800}
+                height={500}
+                key={index}
+              />
+            ))}
+          </Carousel>
+        </div>
+      )}
 
-          <h2 className="text-3xl font-bold">
-              {post.title}
-          </h2>
-          <p className="mb-4 text-lg font-thin text-gray-500 dark:text-gray-400 mt-2">
-              {post.content}
-          </p>
-      </>
-    )
+      <h2 className="text-3xl font-bold">
+        {post.title}
+      </h2>
+      <p className="mb-4 text-lg font-thin text-gray-500 dark:text-gray-400 mt-2">
+        {post.content}
+      </p>
+    </>
+  )
 }
 
 PostPage.getLayout = function getLayout(page: React.ReactNode) {
@@ -54,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const {data} = await supabase
     .from('posts')
-    .select("*")
+    .select("*, author:author_id (*)")
     .eq('id', id)
     .maybeSingle()
     .throwOnError()
