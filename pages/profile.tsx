@@ -46,7 +46,7 @@ export default function Profile() {
                     {/*    Joined in August 2014*/}
                     {/*</div>*/}
                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                        {"« User bio feature coming soon »"}
+                        {profile?.data?.bio}
                     </div>
                 </div>
             </Avatar>

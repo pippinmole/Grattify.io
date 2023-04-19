@@ -68,7 +68,6 @@ const createProfile = async (supabase: SupabaseClient<Database>, user: User) => 
   return supabase
     .from("profiles")
     .insert({
-      bio: "",
       id: user.id,
       username: usernameToEmail(user.email)
     })

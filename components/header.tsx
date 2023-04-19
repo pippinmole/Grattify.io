@@ -8,6 +8,8 @@ import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-rea
 import {getProfile, ProfileResponse} from "../models/types";
 import AuthorizedProfileDropdown from "./header/AuthorizedProfileDropdown";
 import UnauthorizedDropdown from "./header/UnauthorizedProfileDropdown";
+import Image from "next/image";
+import logo from "../public/tailwind-logo.svg"
 
 export default function Header() {
   const user = useUser();
@@ -25,10 +27,12 @@ export default function Header() {
 
   return (
     <Navbar fluid={false} rounded={true}>
-      <Navbar.Brand href="https://flowbite.com/">
-                <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-                    {siteMetadata.headerTitle}
-                </span>
+      <Navbar.Brand href={siteMetadata.siteUrl}>
+        <Image src={logo} alt={"Logo"} width={30} height={30}/>
+
+        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white ml-3">
+          {siteMetadata.headerTitle}
+        </span>
       </Navbar.Brand>
 
       <div className="flex md:order-2">
