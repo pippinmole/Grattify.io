@@ -9,6 +9,7 @@ import {createBrowserSupabaseClient} from "@supabase/auth-helpers-nextjs";
 import {SessionContextProvider, Session} from "@supabase/auth-helpers-react";
 import {ToastContainer} from "react-toast";
 import {Analytics} from "@vercel/analytics/react";
+import Head from "next/head";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -35,6 +36,10 @@ export default function App({
       <ThemeProvider attribute="class">
         <ToastContainer position="top-right" delay={5000}/>
         <NextNProgress options={{showSpinner: false}}/>
+
+        <Head>
+          <meta name="viewport" content="width=device-width, user-scalable=yes"/>
+        </Head>
 
         {getLayout(<Component {...pageProps}/>)}
 
