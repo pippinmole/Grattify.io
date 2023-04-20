@@ -1,10 +1,11 @@
-import {Session} from "@supabase/auth-helpers-react";
+import {Session, useSession} from "@supabase/auth-helpers-react";
 import {User} from "@supabase/gotrue-js";
 import {SupabaseClient} from "@supabase/supabase-js";
 import {supabase} from "./supabaseClient";
 import {Database} from "../models/schema";
 import {IPostForm} from "../components/index/CreatePost";
-import {uploadFiles} from "./supabaseFileUtils";
+import {useEffect, useState} from "react";
+import {ProfileResponse} from "../models/types";
 
 export async function getProfile(
   supabase: SupabaseClient<Database>,
@@ -64,7 +65,6 @@ export async function createPost(
   form: IPostForm,
   files: string[]
 ) {
-
   return supabase
     .from('posts')
     .insert({
@@ -99,4 +99,34 @@ const usernameToEmail = (email: string | undefined) => {
   if(!email) return "UNKNOWN";
 
   return email.substring(0, email.indexOf("@"))
+}
+
+export const useProfile = (): ProfileResponse | null => {
+  const session = useSession();
+  const [profile, setProfile] = useState<ProfileResponse | null>(null);
+
+  useEffect(() => {
+    if (!session) {
+      setProfile(null)
+    } else {
+      getProfile(supabase, session)
+        .then(setProfile)
+    }
+  }, [session])
+
+  return profile
+}
+
+export type EditProfile = {
+  username: string
+  bio: string
+}
+
+export async function updateProfile(profile: ProfileResponse['data'], newProfile: EditProfile) {
+  return supabase
+    .from("profiles")
+    .update({
+      ...newProfile
+    })
+    .eq("id", profile?.id)
 }

@@ -4,22 +4,13 @@ import AccessDenied from "../components/access-denied";
 import {Avatar, Button, Tabs, Timeline} from "flowbite-react";
 import {HiArrowNarrowRight, HiCalendar} from "react-icons/hi";
 import Link from "next/link";
-import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
-import {getAllPostsForUserId, getProfile} from "../lib/supabaseUtils";
-import {Database} from "../models/schema";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
+import {getAllPostsForUserId, useProfile} from "../lib/supabaseUtils";
 import {PostResponseArray, ProfileResponse} from "../models/types";
 
 export default function Profile() {
-    const session = useSession()
-    const supabaseClient = useSupabaseClient<Database>()
-    const [profile, setProfile] = useState<ProfileResponse>()
-
-    useEffect(() => {
-        if(!session) return
-
-        getProfile(supabaseClient, session)
-          .then(p => setProfile(p))
-    }, [session])
+    // TODO: Switch this to user[id] profile instead of session
+    const profile = useProfile()
 
     // If no session exists, display access denied message
     if (!profile) {
