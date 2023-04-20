@@ -25,7 +25,8 @@ function PostPage({ post }: { post: PostResponseSuccess }) {
             {post.images?.map((src, index) => (
               <Image
                 src={src}
-                placeholder={"empty"}
+                placeholder={"blur"}
+                blurDataURL={"/public/pljaceholder-image.svg"}
                 alt="..."
                 width={800}
                 height={500}

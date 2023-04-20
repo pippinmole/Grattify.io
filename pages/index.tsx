@@ -1,5 +1,5 @@
 import Layout from "../components/layout"
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {CreatePost, ExistingPost, RecentPosts} from "../components/index";
 import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
 import {getTodaysPost} from "../lib/supabaseUtils";
