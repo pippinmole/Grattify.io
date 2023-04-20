@@ -25,6 +25,7 @@ function PostPage({ post }: { post: PostResponseSuccess }) {
             {post.images?.map((src, index) => (
               <Image
                 src={src}
+                placeholder={"empty"}
                 alt="..."
                 width={800}
                 height={500}
