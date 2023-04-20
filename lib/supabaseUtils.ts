@@ -28,7 +28,7 @@ export async function getTodaysPost(
 
   return supabase
     .from('posts')
-    .select("*, author_id (*)")
+    .select("*, author:author_id (*)")
     .eq('author_id', session.user.id)
     .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
     .maybeSingle()
@@ -39,7 +39,7 @@ export async function getAllPosts<T>(
 ) {
   return supabase
     .from('posts')
-    .select(`*, author_id (*)`)
+    .select(`*, author:author_id (*)`)
 }
 
 export async function getAllPostsForSession(
@@ -55,7 +55,7 @@ export async function getAllPostsForUserId(
 ) {
   return supabase
     .from('posts')
-    .select(`*, author_id (*)`)
+    .select(`*, author:author_id (*)`)
     .eq('author_id', id)
 }
 

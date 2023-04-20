@@ -1,38 +1,32 @@
 import Link from "next/link";
-import Moment from "react-moment";
 import Image from "next/image";
-import UserProfileIcon from "../user/UserProfileIcon";
 import React from "react";
 import {HiArrowNarrowRight} from "react-icons/hi";
 import {PostResponseSuccess} from "../../models/types";
+import UserProfile from "../user/UserProfile";
 
 export default function PostTile({post}: {post: PostResponseSuccess}) {
   if (!post) {
     return <>Loading...</>
   }
 
-  const fallbackUrl = "https://picsum.photos/800/1600"
-  const url = post.images.length > 0 ? post.images[0] : fallbackUrl
+  const url = post.images.length > 0 ? post.images[0] : null
 
   return (
-    <div className="p-4 md:w-1/3">
+    <div className="p-4 md:w-1/3 h-fit">
       <div
-        className="h-full border-2 border-gray-200 dark:border-gray-600 border-opacity-60 rounded-lg overflow-hidden">
-        <Image className="lg:h-48 md:h-36 w-full object-cover object-center"
-               src={url}
-               loading={"lazy"}
-               placeholder={"blur"}
-               blurDataURL={fallbackUrl}
-               alt="blog"
-               width={100}
-               height={100}
-        />
+        className="border-2 border-gray-200 dark:border-gray-600 border-opacity-60 rounded-lg overflow-hidden">
+        {url && <Image className="lg:h-48 md:h-36 w-full object-cover object-center"
+                       src={url}
+                       loading={"lazy"}
+                       placeholder={"blur"}
+                       blurDataURL={"https://picsum.photos/800/1600"}
+                       alt="blog"
+                       width={100}
+                       height={100}
+        />}
 
         <div className="p-6">
-          <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
-            Created <Moment fromNow={true} date={new Date(post.created_at ?? "")}></Moment>
-          </h2>
-
           <h1 className="title-font text-lg font-medium mb-3">
             {post.title && post.title?.length > 35 ? `${post.title.slice(0, 35)}...` : post.title}
           </h1>
@@ -47,7 +41,15 @@ export default function PostTile({post}: {post: PostResponseSuccess}) {
             </Link>
           </p>
 
-          {post.author && <UserProfileIcon profile={post.author}/>}
+          <div className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
+            {post.author && (
+              <Link href={`/profile/${post.author?.id}`}>
+                <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"/>
+
+                <UserProfile profile={post.author}/>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>
