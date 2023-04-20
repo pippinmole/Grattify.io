@@ -26,6 +26,18 @@ export async function getProfile(
   return supabase.from('profiles')
     .select('*')
     .eq('id', session?.user.id)
+    .limit(1)
+    .maybeSingle();
+}
+
+export async function getPreferences(
+  supabase: SupabaseClient<Database>,
+  session: Session
+) {
+  return supabase.from('preferences')
+    .select('*')
+    .eq('id', session?.user.id)
+    .limit(1)
     .maybeSingle();
 }
 
@@ -37,3 +49,6 @@ export type PostResponseArray = Awaited<ReturnType<typeof getPosts>>
 
 export type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 export type ProfileResponse = Awaited<ReturnType<typeof getProfile>>
+
+export type Preferences = Database["public"]["Tables"]["preferences"]["Row"];
+export type PreferencesResponse = Awaited<ReturnType<typeof getPreferences>>

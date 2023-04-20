@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, Label, Textarea, TextInput} from "flowbite-react";
-import {EditProfile, updateProfile, useProfile} from "../../lib/supabaseUtils";
+import {EditBasicProfile, updateBasicProfile, useProfile} from "../../lib/supabaseUtils";
 import {PostgrestError} from "@supabase/postgrest-js";
 import {toast} from "react-toast";
 
@@ -8,7 +8,7 @@ export default function BasicProfile() {
   const profile = useProfile();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<PostgrestError>();
-  const [newProfile, setNewProfile] = useState<EditProfile>(profile?.data || {
+  const [newProfile, setNewProfile] = useState<EditBasicProfile>(profile?.data || {
     username: "",
     bio: "",
   });
@@ -37,7 +37,7 @@ export default function BasicProfile() {
     setLoading(true)
 
     if (profile) {
-      const {data, error} = await updateProfile(profile.data, newProfile)
+      const {data, error} = await updateBasicProfile(profile.data, newProfile)
     }
 
     setLoading(false)

@@ -35,6 +35,20 @@ export interface Database {
           title?: string | null
         }
       }
+      preferences: {
+        Row: {
+          email_can_post: boolean | null
+          id: string
+        }
+        Insert: {
+          email_can_post?: boolean | null
+          id: string
+        }
+        Update: {
+          email_can_post?: boolean | null
+          id?: string
+        }
+      }
       profiles: {
         Row: {
           bio: string

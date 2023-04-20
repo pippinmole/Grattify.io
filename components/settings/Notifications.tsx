@@ -1,16 +1,22 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Label, ToggleSwitch} from "flowbite-react";
-import {useProfile} from "../../lib/supabaseUtils";
-
-type NotificationSettings = {
-  canPostAgain: boolean
-}
+import {
+  EditPreferencesProfile,
+  updateBasicProfile,
+  updatePreferencesProfile,
+  usePreferences,
+  useProfile
+} from "../../lib/supabaseUtils";
+import {toast} from "react-toast";
+import {PostgrestError} from "@supabase/postgrest-js";
 
 export default function NotificationsSettings() {
 
-  const profile = useProfile()
-  const [form, setForm] = useState<NotificationSettings>({
-    canPostAgain: true
+  const preferences = usePreferences()
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<PostgrestError>();
+  const [form, setForm] = useState<EditPreferencesProfile>({
+    email_can_post: true
   })
 
   const handleInput = (name: string, value: boolean) => {
@@ -20,7 +26,29 @@ export default function NotificationsSettings() {
     })
   }
 
-  if (!profile || !profile.data) {
+  const updateProfileData = async () => {
+    setLoading(true)
+
+    if (preferences) {
+      const {data, error} = await updatePreferencesProfile(preferences.data, form)
+    }
+
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    if (preferences?.data) {
+      setForm({...preferences.data} as EditPreferencesProfile);
+    }
+  }, [preferences]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message)
+    }
+  }, [error]);
+
+  if (!preferences || !preferences.data) {
     return <>Loading...</>
   }
 
@@ -44,22 +72,16 @@ export default function NotificationsSettings() {
 
       <div className="flex flex-col gap-y-2">
         <ToggleSwitch
-          checked={form.canPostAgain}
+          checked={form.email_can_post}
           label="When you can create a new post"
-          onChange={(value) => handleInput("canPostAgain", value)}
-        />
-
-        <ToggleSwitch
-          checked={false}
-          label="When you can create a new post"
-          onChange={(value) => handleInput("emailNotifications", value)}
+          onChange={(value) => handleInput("email_can_post", value)}
         />
 
         <Button
           size={"xs"}
           className="w-fit"
-          // onClick={updateProfileData}
-          // disabled={loading}
+          onClick={updateProfileData}
+          disabled={loading}
         >
           Update Notifications
         </Button>

@@ -5,7 +5,7 @@ import {supabase} from "./supabaseClient";
 import {Database} from "../models/schema";
 import {IPostForm} from "../components/index/CreatePost";
 import {useEffect, useState} from "react";
-import {ProfileResponse} from "../models/types";
+import {getPreferences, PreferencesResponse, ProfileResponse} from "../models/types";
 
 export async function getProfile(
   supabase: SupabaseClient<Database>,
@@ -96,16 +96,28 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 
   if(!session?.user) return
 
-  await createProfile(supabase, session?.user);
+  await createBasicProfile(supabase, session?.user);
+  await createPreferencesProfile(supabase, session?.user);
 });
 
-const createProfile = async (supabase: SupabaseClient<Database>, user: User) => {
+const createBasicProfile = async (supabase: SupabaseClient<Database>, user: User) => {
   return supabase
     .from("profiles")
     .insert({
       id: user.id,
       username: usernameToEmail(user.email)
     })
+    .limit(1)
+    .single();
+}
+
+const createPreferencesProfile = async (supabase: SupabaseClient<Database>, user: User) => {
+  return supabase
+    .from("preferences")
+    .insert({
+      id: user.id
+    })
+    .limit(1)
     .single();
 }
 
@@ -131,14 +143,43 @@ export const useProfile = (): ProfileResponse | null => {
   return profile
 }
 
-export type EditProfile = {
-  username: string
-  bio: string
+export const usePreferences = (): PreferencesResponse | null => {
+  const session = useSession();
+  const [profile, setProfile] = useState<PreferencesResponse | null>(null);
+
+  useEffect(() => {
+    if (!session) {
+      setProfile(null)
+    } else {
+      getPreferences(supabase, session)
+        .then(setProfile)
+    }
+  }, [session])
+
+  return profile
 }
 
-export async function updateProfile(profile: ProfileResponse['data'], newProfile: EditProfile) {
+export type EditBasicProfile = {
+  username: string
+  bio: string,
+}
+
+export type EditPreferencesProfile = {
+  email_can_post: boolean
+}
+
+export async function updateBasicProfile(profile: ProfileResponse['data'], newProfile: EditBasicProfile) {
   return supabase
-    .from("profiles")
+    .from('profiles')
+    .update({
+      ...newProfile
+    })
+    .eq("id", profile?.id)
+}
+
+export async function updatePreferencesProfile(profile: PreferencesResponse['data'], newProfile: EditPreferencesProfile) {
+  return supabase
+    .from('preferences')
     .update({
       ...newProfile
     })

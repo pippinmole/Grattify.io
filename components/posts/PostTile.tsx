@@ -4,13 +4,17 @@ import React from "react";
 import {HiArrowNarrowRight} from "react-icons/hi";
 import {PostResponseSuccess} from "../../models/types";
 import UserProfile from "../user/UserProfile";
+import Moment from "react-moment";
 
 export default function PostTile({post}: {post: PostResponseSuccess}) {
   if (!post) {
     return <>Loading...</>
   }
 
+  const postUrl = `/post/${post.id}`
   const url = post.images.length > 0 ? post.images[0] : null
+  const title = post.title && post.title?.length > 35 ? `${post.title.slice(0, 35)}...` : post.title
+  const content = post?.content && post.content.length > 35 ? `${post.content.slice(0, 35)}...` : post.content
 
   return (
     <div className="p-4">
@@ -27,14 +31,18 @@ export default function PostTile({post}: {post: PostResponseSuccess}) {
         />}
 
         <div className="p-6">
-          <h1 className="title-font text-lg font-medium mb-3">
-            {post.title && post.title?.length > 35 ? `${post.title.slice(0, 35)}...` : post.title}
-          </h1>
-          <p className="leading-relaxed mb-3 overflow-ellipsis">
-            {post?.content && post.content.length > 35 ? `${post.content.slice(0, 35)}...` : post.content}
+          <h1 className="title-font text-lg font-medium">
+            {title}
 
-            <Link className="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0 ml-2 text-sm"
-                  href={`/post/${post.id}`}>
+            <Moment
+              to={new Date(post.created_at ?? "")}
+              className="text-xs text-gray-500 dark:text-gray-400 ml-1.5"></Moment>
+          </h1>
+
+          <p className="leading-relaxed mb-3 overflow-ellipsis">
+            {content}
+
+            <Link className="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0 ml-2 text-sm" href={postUrl}>
               Read More
 
               <HiArrowNarrowRight className="ml-1 h-3 w-3"/>

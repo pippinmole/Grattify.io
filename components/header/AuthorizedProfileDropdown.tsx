@@ -25,7 +25,7 @@ export default function AuthorizedProfileDropdown({user, profile, signOut}: {
           </span>
         </Dropdown.Header>
 
-        <Link href="/profile/index">
+        <Link href="/profile">
           <Dropdown.Item>
             My Profile
           </Dropdown.Item>
