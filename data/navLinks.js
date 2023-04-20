@@ -2,7 +2,7 @@ const headerNavLinks = [
     { href: '/', title: 'Home', authorize: false },
     { href: '/discover', title: 'Discover', authorize: false },
 
-    // { href: '/profile', title: 'My Profile', authorize: true },
+    // { href: '/profile', title: 'My Index', authorize: true },
     // { href: '/server', title: 'Server' },
     // { href: '/protected', title: 'Protected' },
     // { href: '/api-example', title: 'API' },

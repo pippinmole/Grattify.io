@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
-import IntakeLayout from "../components/IntakeLayout";
+import IntakeLayout from "../components/intake/IntakeLayout";
 import {Checkbox, Label, TextInput} from "flowbite-react";
 import Link from "next/link";
 import {toast} from "react-toast";

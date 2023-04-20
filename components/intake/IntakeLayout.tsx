@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import logo from "../public/tailwind-logo.svg";
+import logo from "../../public/tailwind-logo.svg";
 import React from "react";
 
 export default function IntakeLayout({children}: {children: React.ReactNode}) {

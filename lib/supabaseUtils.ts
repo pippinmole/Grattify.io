@@ -11,10 +11,21 @@ export async function getProfile(
   supabase: SupabaseClient<Database>,
   session: Session
 ) {
+  return getProfileById(supabase, session.user.id)
+}
+
+export async function getProfileById(
+  supabase: SupabaseClient<Database>,
+  id: string | null
+) {
+  if(!id) {
+    return null
+  }
+
   return supabase
     .from("profiles")
     .select(`*`)
-    .eq("id", session?.user.id)
+    .eq("id", id)
     .maybeSingle();
 }
 

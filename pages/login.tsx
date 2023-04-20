@@ -5,7 +5,7 @@ import {toast} from "react-toast";
 import {AiFillGithub} from "react-icons/ai";
 import {useSupabaseClient} from "@supabase/auth-helpers-react";
 import {Button, Checkbox, Label, TextInput} from "flowbite-react";
-import IntakeLayout from "../components/IntakeLayout";
+import IntakeLayout from "../components/intake/IntakeLayout";
 import Link from "next/link";
 
 interface ILoginForm {
@@ -50,7 +50,7 @@ export default function Login() {
       password: form.password,
     })
       .then(({data, error}) => {
-        const {user, session} = data
+        const {user} = data
 
         setError(error)
 
@@ -164,9 +164,7 @@ function SocialLogins() {
     supabaseClient.auth.signInWithOAuth({
       provider: name as Provider,
     })
-      .then(({data, error}) => {
-        setError(error)
-      })
+      .then(({error}) => setError(error))
       .catch(err => console.log(err))
   }
 

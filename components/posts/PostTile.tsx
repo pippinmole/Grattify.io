@@ -13,7 +13,7 @@ export default function PostTile({post}: {post: PostResponseSuccess}) {
   const url = post.images.length > 0 ? post.images[0] : null
 
   return (
-    <div className="p-4 md:w-1/3 h-fit">
+    <div className="p-4">
       <div
         className="border-2 border-gray-200 dark:border-gray-600 border-opacity-60 rounded-lg overflow-hidden">
         {url && <Image className="lg:h-48 md:h-36 w-full object-cover object-center"
