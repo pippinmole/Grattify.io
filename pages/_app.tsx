@@ -33,7 +33,7 @@ export default function App({
       initialSession={initialSession}
     >
       <ThemeProvider attribute="class">
-        <ToastContainer position="top-right"/>
+        <ToastContainer position="top-right" delay={5000}/>
         <NextNProgress options={{showSpinner: false}}/>
 
         {getLayout(<Component {...pageProps}/>)}
