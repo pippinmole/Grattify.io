@@ -1,6 +1,6 @@
 export default function PostTileSkeleton() {
   return (
-    <div className="p-4 md:w-1/3">
+    <div className="p-4">
       <div role="status"
            className="max-w-sm border border-gray-100 rounded shadow animate-pulse md:p-6 dark:border-gray-700">
         <div className="flex items-center justify-center h-48 mb-4 bg-gray-300 rounded dark:bg-gray-700">

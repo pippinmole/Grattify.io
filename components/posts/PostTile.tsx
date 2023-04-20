@@ -23,7 +23,7 @@ export default function PostTile({post}: {post: PostResponseSuccess}) {
                        blurDataURL={"https://picsum.photos/800/1600"}
                        alt="blog"
                        width={100}
-                       height={100}
+                       height={300}
         />}
 
         <div className="p-6">
@@ -43,11 +43,11 @@ export default function PostTile({post}: {post: PostResponseSuccess}) {
 
           <div className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">
             {post.author && (
-              <Link href={`/profile/${post.author?.id}`}>
+              <>
                 <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"/>
 
                 <UserProfile profile={post.author}/>
-              </Link>
+              </>
             )}
           </div>
         </div>

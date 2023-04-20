@@ -11,16 +11,14 @@ export default function ProfilePage() {
   const router = useRouter();
   const {id} = router.query
 
-  const [profile, setProfile] = useState<ProfileResponse>();
+  const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const supabaseClient = useSupabaseClient()
 
   useEffect(() => {
-    if(!router.isReady) return
-
     async function getProfile() {
       console.log(id)
 
-      if (!id) {
+      if (!router.isReady || !id) {
         router.push('/')
         return
       }

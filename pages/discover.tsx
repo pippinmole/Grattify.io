@@ -9,7 +9,6 @@ import {PostResponseArray, PostResponseSuccess} from "../models/types";
 import {PostTileSkeleton} from "../components/posts";
 
 export default function DiscoverPage() {
-  const user = useUser()
   const supabaseClient = useSupabaseClient<Database>()
   const [data, setData] = useState<PostResponseArray>();
 
@@ -38,6 +37,4 @@ export default function DiscoverPage() {
   )
 }
 
-DiscoverPage.getLayout = function getLayout(page: React.ReactNode) {
-  return <Layout>{page}</Layout>
-}
+DiscoverPage.getLayout = (page: React.ReactNode) => <Layout>{page}</Layout>
