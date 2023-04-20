@@ -26,6 +26,7 @@ export async function getProfileById(
     .from("profiles")
     .select(`*`)
     .eq("id", id)
+    .limit(1)
     .maybeSingle();
 }
 
@@ -42,6 +43,7 @@ export async function getTodaysPost(
     .select("*, author:author_id (*)")
     .eq('author_id', session.user.id)
     .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+    .limit(1)
     .maybeSingle()
 }
 
@@ -85,6 +87,7 @@ export async function createPost(
       images: files
     })
     .select()
+    .limit(1)
     .maybeSingle()
 }
 

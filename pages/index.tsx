@@ -10,7 +10,6 @@ import {Database} from "../models/schema";
 export default function IndexPage() {
   const supabaseClient = useSupabaseClient<Database>()
   const [post, setPost] = useState<PostResponse>();
-  const user = useUser();
   const session = useSession()
 
   // Show error if we fail to get the post
