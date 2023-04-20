@@ -2,6 +2,7 @@ import React from "react";
 import Layout from "../../components/layout";
 import BasicProfile from "../../components/settings/BasicProfile";
 import NotificationsSettings from "../../components/settings/Notifications";
+import Authorized from "../../components/authorized";
 
 export default function Settings() {
   return (
@@ -23,5 +24,5 @@ export default function Settings() {
 }
 
 Settings.getLayout = function getLayout(page: React.ReactNode) {
-  return <Layout>{page}</Layout>
+  return <Layout><Authorized>{page}</Authorized></Layout>
 }

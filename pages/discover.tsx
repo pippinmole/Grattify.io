@@ -2,7 +2,7 @@ import Layout from "../components/layout";
 import React, {useEffect, useState} from "react";
 import PostTile from "../components/posts/PostTile";
 import PostTileContainer from "../components/posts/PostTileContainer";
-import {useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 import {getAllPosts} from "../lib/supabaseUtils";
 import {Database} from "../models/schema";
 import {PostResponseArray, PostResponseSuccess} from "../models/types";
