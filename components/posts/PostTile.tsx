@@ -12,7 +12,7 @@ export default function PostTile({post}: {post: PostResponseSuccess}) {
   }
 
   const fallbackUrl = "https://picsum.photos/800/1600"
-  const url = post.images.length > 0 ? post.images[0] :  fallbackUrl
+  const url = post.images.length > 0 ? post.images[0] : fallbackUrl
 
   return (
     <div className="p-4 md:w-1/3">
@@ -25,7 +25,8 @@ export default function PostTile({post}: {post: PostResponseSuccess}) {
                blurDataURL={fallbackUrl}
                alt="blog"
                width={100}
-               height={100}/>
+               height={100}
+        />
 
         <div className="p-6">
           <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">

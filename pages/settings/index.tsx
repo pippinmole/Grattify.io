@@ -1,19 +1,26 @@
 import React from "react";
 import Layout from "../../components/layout";
+import BasicProfile from "../../components/settings/BasicProfile";
+import NotificationsSettings from "../../components/settings/Notifications";
 
 export default function Settings() {
-  return <></>
-}
+  return (
+    <div className="md:flex flex-row">
+      <div className="w-full p-4 md:w-3/4 m-auto">
+      <h1 className="text-2xl">
+        Account
+      </h1>
 
-export async function getServerSideProps(context: any) {
-  return {
-    redirect: {
-      destination: '/settings/account',
-      permanent: true,
-    },
-  }
-}
+      <hr className="h-px mt-2 mb-4 bg-gray-200 border-0 dark:bg-gray-700"/>
 
+      <div className="flex flex-col gap-5">
+        <BasicProfile />
+        <NotificationsSettings />
+      </div>
+      </div>
+    </div>
+  )
+}
 
 Settings.getLayout = function getLayout(page: React.ReactNode) {
   return <Layout>{page}</Layout>

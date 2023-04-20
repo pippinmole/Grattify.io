@@ -49,7 +49,6 @@ export default function BasicProfile() {
 
   return (
     <div className="flex flex-col gap-y-4 w-3/4">
-
       <div>
         <div className="mb-2 block">
           <Label
@@ -87,7 +86,7 @@ export default function BasicProfile() {
       </div>
 
       <Button
-        className="w-1/4"
+        className="w-fit"
         size={"xs"}
         onClick={updateProfileData}
         disabled={loading}

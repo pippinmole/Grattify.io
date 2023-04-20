@@ -18,11 +18,11 @@ export default function AuthorizedProfileDropdown({user, profile, signOut}: {
       >
         <Dropdown.Header>
         <span className="block text-sm">
-      {user.aud}
+      {profile?.data?.username}
       </span>
           <span className="block truncate text-sm font-medium">
-    {user.email}
-    </span>
+            {user.email}
+          </span>
         </Dropdown.Header>
 
         <Link href="/profile">
@@ -36,10 +36,6 @@ export default function AuthorizedProfileDropdown({user, profile, signOut}: {
             Settings
           </Dropdown.Item>
         </Link>
-
-        {/*<Dropdown.Item>*/}
-        {/*    Earnings*/}
-        {/*</Dropdown.Item>*/}
 
         <Dropdown.Divider/>
 
