@@ -8,6 +8,9 @@ import {supabase} from "../../lib/supabaseClient";
 import {PostResponseSuccess} from "../../models/types";
 
 function PostPage({ post }: { post: PostResponseSuccess }) {
+  const controlValue = post?.images.length > 1
+    ? ""
+    : " "
 
   if (!post) {
     return <>Loading...</>
@@ -21,7 +24,7 @@ function PostPage({ post }: { post: PostResponseSuccess }) {
 
       {post.images.length > 0 && (
         <div className="h-56 sm:h-64 xl:h-80 2xl:h-96 mb-4">
-          <Carousel>
+          <Carousel leftControl={controlValue} rightControl={controlValue}>
             {post.images?.map((src, index) => (
               <Image
                 src={src}
