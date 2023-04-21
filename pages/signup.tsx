@@ -4,9 +4,10 @@ import IntakeLayout from "../components/intake/IntakeLayout";
 import {Checkbox, Label, TextInput} from "flowbite-react";
 import Link from "next/link";
 import {toast} from "react-toast";
-import {useSupabaseClient} from "@supabase/auth-helpers-react";
+import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
 import {Database} from "../models/schema";
 import {AuthError} from "@supabase/gotrue-js";
+import {supabase} from "../lib/supabaseClient";
 
 interface ISignupForm {
   email: string
@@ -41,22 +42,42 @@ export default function Signup() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log(form)
 
-    supabaseClient.auth.signUp({
-      email: form.email,
-      password: form.password
-    })
-      .then(({data, error}) => {
+    async function signUp() {
+      const {data, error} = await supabase.auth
+        .signUp({
+          email: form.email,
+          password: form.password
+        })
+
+      if (error) {
         setError(error)
+        return
+      }
 
+      if (data?.user) {
         // If we successfully logged in, redirect!
-        if (data.user) {
-          toast.success(`Successfully created account!`)
-          push('/login')
-        }
-      })
-      .catch(err => console.log(err))
+        toast.success(`Successfully created account!`)
+        push('/login')
+      }
+    }
+
+    signUp()
+
+    // supabaseClient.auth.signUp({
+    //   email: form.email,
+    //   password: form.password
+    // })
+    //   .then(({data, error}) => {
+    //     setError(error)
+    //
+    //     // If we successfully logged in, redirect!
+    //     if (data.user) {
+    //       toast.success(`Successfully created account!`)
+    //       push('/login')
+    //     }
+    //   })
+    //   .catch(err => console.log(err))
   }
 
   useEffect(() => {
@@ -112,8 +133,8 @@ export default function Signup() {
             <Label htmlFor="terms" className="ml-3">
               I accept the
               <Link href="/terms" className="font-medium text-primary-600 hover:underline dark:text-primary-500 ml-1">
-              Terms and Conditions
-            </Link>
+                Terms and Conditions
+              </Link>
             </Label>
           </div>
         </div>

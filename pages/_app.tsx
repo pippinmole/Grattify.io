@@ -16,9 +16,9 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 }
 
 export default function App({
-  Component,
-  pageProps: { initialSession, ...pageProps },
-}: AppProps<{
+                              Component,
+                              pageProps: { initialSession, ...pageProps },
+                            }: AppProps<{
   initialSession: Session
 }> & {Component: NextPageWithLayout}) {
 
@@ -38,7 +38,7 @@ export default function App({
         <NextNProgress options={{showSpinner: false}}/>
 
         <Head>
-          <meta name="viewport" content="width=device-width, user-scalable=yes"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
         </Head>
 
         {getLayout(<Component {...pageProps}/>)}

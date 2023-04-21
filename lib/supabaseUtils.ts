@@ -91,42 +91,6 @@ export async function createPost(
     .maybeSingle()
 }
 
-supabase.auth.onAuthStateChange(async (event, session) => {
-  console.log("auth event", event, session)
-
-  if(!session?.user) return
-
-  await createBasicProfile(supabase, session?.user);
-  await createPreferencesProfile(supabase, session?.user);
-});
-
-const createBasicProfile = async (supabase: SupabaseClient<Database>, user: User) => {
-  return supabase
-    .from("profiles")
-    .insert({
-      id: user.id,
-      username: usernameToEmail(user.email)
-    })
-    .limit(1)
-    .single();
-}
-
-const createPreferencesProfile = async (supabase: SupabaseClient<Database>, user: User) => {
-  return supabase
-    .from("preferences")
-    .insert({
-      id: user.id
-    })
-    .limit(1)
-    .single();
-}
-
-const usernameToEmail = (email: string | undefined) => {
-  if(!email) return "UNKNOWN";
-
-  return email.substring(0, email.indexOf("@"))
-}
-
 export const useProfile = (): ProfileResponse | null => {
   const session = useSession();
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
