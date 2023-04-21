@@ -30,7 +30,7 @@ function PostPage({ post }: { post: PostResponseSuccess }) {
               <Image
                 src={src}
                 placeholder={"blur"}
-                blurDataURL={"/public/pljaceholder-image.svg"}
+                blurDataURL={"/public/placeholder-image.svg"}
                 alt="..."
                 width={800}
                 height={500}
