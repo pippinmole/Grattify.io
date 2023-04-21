@@ -14,7 +14,11 @@ export default function ProfileTabs({profile}: {profile: ProfileResponse}) {
       </Tabs.Item>
 
       <Tabs.Item title="About">
-        {"« User bio feature coming soon »"}
+        {profile && profile.data && (
+          <>
+            {profile.data.bio}
+          </>
+        )}
       </Tabs.Item>
     </Tabs.Group>
   )
