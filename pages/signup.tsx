@@ -14,6 +14,8 @@ interface ISignupForm {
   password: string
 }
 
+Signup.title = "Sign up"
+
 export default function Signup() {
 
   const {push} = useRouter();

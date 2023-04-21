@@ -14,6 +14,8 @@ interface ILoginForm {
   rememberMe: boolean
 }
 
+Login.title = "Log in"
+
 export default function Login() {
 
   const supabaseClient = useSupabaseClient();

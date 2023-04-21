@@ -10,9 +10,11 @@ import {SessionContextProvider, Session} from "@supabase/auth-helpers-react";
 import {ToastContainer} from "react-toast";
 import {Analytics} from "@vercel/analytics/react";
 import Head from "next/head";
+import siteMetadata from "../data/siteMetadata";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode
+  getLayout?: (page: ReactElement) => ReactNode,
+  title?: string
 }
 
 export default function App({
@@ -39,6 +41,8 @@ export default function App({
 
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+
+          <title>{Component.title} | {siteMetadata.headerTitle}</title>
         </Head>
 
         {getLayout(<Component {...pageProps}/>)}

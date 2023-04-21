@@ -23,6 +23,7 @@ export default function Settings() {
   )
 }
 
+Settings.title = "Settings"
 Settings.getLayout = function getLayout(page: React.ReactNode) {
   return <Layout><Authorized>{page}</Authorized></Layout>
 }

@@ -39,4 +39,5 @@ export default function ProfilePage() {
   )
 }
 
+ProfilePage.title = "Profile"
 ProfilePage.getLayout = (page: JSX.Element) => <Layout>{page}</Layout>

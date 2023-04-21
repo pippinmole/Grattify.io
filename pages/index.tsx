@@ -7,6 +7,8 @@ import {toast} from "react-toast";
 import {PostResponse} from "../models/types";
 import {Database} from "../models/schema";
 
+IndexPage.title = "Home"
+
 export default function IndexPage() {
   const supabaseClient = useSupabaseClient<Database>()
   const [post, setPost] = useState<PostResponse>();

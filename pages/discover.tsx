@@ -8,6 +8,8 @@ import {Database} from "../models/schema";
 import {PostResponseArray, PostResponseSuccess} from "../models/types";
 import {PostTileSkeleton} from "../components/posts";
 
+DiscoverPage.title = "Discover"
+
 export default function DiscoverPage() {
   const supabaseClient = useSupabaseClient<Database>()
   const [data, setData] = useState<PostResponseArray>();

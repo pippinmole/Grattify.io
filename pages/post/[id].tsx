@@ -7,6 +7,7 @@ import UserProfile from "../../components/user/UserProfile";
 import {supabase} from "../../lib/supabaseClient";
 import {PostResponseSuccess} from "../../models/types";
 
+PostPage.title = "Post"
 function PostPage({ post }: { post: PostResponseSuccess }) {
   const controlValue = post?.images.length > 1
     ? ""

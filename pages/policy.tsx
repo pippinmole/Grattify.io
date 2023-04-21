@@ -1,5 +1,7 @@
 import Layout from "../components/layout"
 
+PolicyPage.title = "Privacy Policy"
+
 export default function PolicyPage() {
   return (
     <Layout>

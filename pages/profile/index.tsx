@@ -14,4 +14,5 @@ export default function MyProfile() {
   )
 }
 
+MyProfile.title = "My Profile"
 MyProfile.getLayout = (page: JSX.Element) => <Layout><Authorized>{page}</Authorized></Layout>
