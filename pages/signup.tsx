@@ -4,10 +4,8 @@ import IntakeLayout from "../components/intake/IntakeLayout";
 import {Label, TextInput} from "flowbite-react";
 import Link from "next/link";
 import {toast} from "react-toast";
-import {useSupabaseClient} from "@supabase/auth-helpers-react";
-import {Database} from "../models/schema";
 import {AuthError} from "@supabase/gotrue-js";
-import {supabase} from "../lib/supabaseClient";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 
 interface ISignupForm {
   email: string
@@ -19,67 +17,39 @@ Signup.title = "Sign up"
 export default function Signup() {
 
   const {push} = useRouter();
-  const xsupabaseClient = useSupabaseClient<Database>();
+  const supabase = useSupabaseClient();
   const [error, setError] = useState<AuthError | null>()
   const [form, setForm] = useState<ISignupForm>({
     email: '',
     password: ''
   })
 
-  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, checked} = event.target
-    setForm({
-      ...form,
-      [name]: checked,
-    });
-  }
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = event.target;
+    const { name, value, type, checked } = event.target;
+
     setForm({
       ...form,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     });
-  }
+  };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    async function signUp() {
-      const {data, error} = await supabase.auth
-        .signUp({
-          email: form.email,
-          password: form.password
-        })
+    const {data, error} = await supabase.auth
+      .signUp({
+        email: form.email,
+        password: form.password
+      })
 
-      if (error) {
-        setError(error)
-        return
-      }
+    const {user} = data
 
-      if (data?.user) {
-        // If we successfully logged in, redirect!
-        toast.success(`Successfully created account!`)
-        push('/login')
-      }
+    setError(error)
+
+    if(user) {
+      toast.success(`Success! Please check your email for a confirmation link.`)
+      await push('/login')
     }
-
-    signUp()
-
-    // supabaseClient.auth.signUp({
-    //   email: form.email,
-    //   password: form.password
-    // })
-    //   .then(({data, error}) => {
-    //     setError(error)
-    //
-    //     // If we successfully logged in, redirect!
-    //     if (data.user) {
-    //       toast.success(`Successfully created account!`)
-    //       push('/login')
-    //     }
-    //   })
-    //   .catch(err => console.log(err))
   }
 
   useEffect(() => {
