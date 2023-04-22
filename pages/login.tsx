@@ -44,25 +44,23 @@ export default function Login() {
     });
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    supabaseClient.auth.signInWithPassword({
-      email: form.email,
-      password: form.password,
+    const {email, password} = form
+    const {data, error} = await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password,
     })
-      .then(({data, error}) => {
-        const {user} = data
 
-        setError(error)
+    const {user} = data
 
-        // If we successfully logged in, redirect!
-        if (data.user) {
-          toast.success(`Welcome back ${user?.email}!`)
-          push('/')
-        }
-      })
-      .catch(err => console.log(err))
+    setError(error)
+
+    if(user) {
+      toast.success(`Welcome back ${user.email}!`)
+      await push('/')
+    }
   }
 
   useEffect(() => {
