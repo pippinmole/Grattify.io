@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {toast} from "react-toast";
 import {PostTile, PostTileContainer, PostTileSkeleton} from "../posts";
 import {PostResponseArray, PostResponseSuccess} from "../../models/types";
-import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
+import {useSession, useSupabaseClient} from "@supabase/auth-helpers-react";
 import {getAllPostsForSession} from "../../lib/supabaseUtils";
 import Link from "next/link";
 

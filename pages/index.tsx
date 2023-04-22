@@ -1,7 +1,7 @@
 import Layout from "../components/layout"
 import {useEffect, useState} from "react";
 import {CreatePost, ExistingPost, RecentPosts} from "../components/index";
-import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
+import {useSession, useSupabaseClient} from "@supabase/auth-helpers-react";
 import {getTodaysPost} from "../lib/supabaseUtils";
 import {toast} from "react-toast";
 import {PostResponse} from "../models/types";

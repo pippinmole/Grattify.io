@@ -16,9 +16,11 @@ export default function ProfilePage() {
 
   useEffect(() => {
     async function getProfile() {
-      console.log(id)
+      if(!router.isReady) {
+        return
+      }
 
-      if (!router.isReady || !id) {
+      if (!id) {
         router.push('/')
         return
       }

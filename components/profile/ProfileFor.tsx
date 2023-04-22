@@ -1,6 +1,5 @@
 import {ProfileResponse} from "../../models/types";
 import React from "react";
-import Layout from "../layout";
 import AccessDenied from "../access-denied";
 import {Avatar} from "flowbite-react";
 import ProfileTabs from "./ProfileTabs";

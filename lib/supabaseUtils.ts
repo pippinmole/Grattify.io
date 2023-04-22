@@ -1,5 +1,4 @@
 import {Session, useSession} from "@supabase/auth-helpers-react";
-import {User} from "@supabase/gotrue-js";
 import {SupabaseClient} from "@supabase/supabase-js";
 import {supabase} from "./supabaseClient";
 import {Database} from "../models/schema";

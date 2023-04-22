@@ -2,10 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Button, Label, ToggleSwitch} from "flowbite-react";
 import {
   EditPreferencesProfile,
-  updateBasicProfile,
   updatePreferencesProfile,
   usePreferences,
-  useProfile
 } from "../../lib/supabaseUtils";
 import {toast} from "react-toast";
 import {PostgrestError} from "@supabase/postgrest-js";
@@ -31,6 +29,9 @@ export default function NotificationsSettings() {
 
     if (preferences) {
       const {data, error} = await updatePreferencesProfile(preferences.data, form)
+
+      // TODO: Handle errors
+      // TODO: Maybe reuse functionality for BasicProfile too
     }
 
     setLoading(false)

@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import IntakeLayout from "../components/intake/IntakeLayout";
-import {Checkbox, Label, TextInput} from "flowbite-react";
+import {Label, TextInput} from "flowbite-react";
 import Link from "next/link";
 import {toast} from "react-toast";
-import {useSession, useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
+import {useSupabaseClient} from "@supabase/auth-helpers-react";
 import {Database} from "../models/schema";
 import {AuthError} from "@supabase/gotrue-js";
 import {supabase} from "../lib/supabaseClient";
@@ -19,7 +19,7 @@ Signup.title = "Sign up"
 export default function Signup() {
 
   const {push} = useRouter();
-  const supabaseClient = useSupabaseClient<Database>();
+  const xsupabaseClient = useSupabaseClient<Database>();
   const [error, setError] = useState<AuthError | null>()
   const [form, setForm] = useState<ISignupForm>({
     email: '',
@@ -126,20 +126,20 @@ export default function Signup() {
           />
         </div>
 
-        <div className="flex items-start">
-          <div className="flex items-start h-5">
-            <Checkbox id="terms"
-                      name="terms"
-                      onChange={handleToggle}
-                      required={true}/>
-            <Label htmlFor="terms" className="ml-3">
-              I accept the
-              <Link href="/terms" className="font-medium text-primary-600 hover:underline dark:text-primary-500 ml-1">
-                Terms and Conditions
-              </Link>
-            </Label>
-          </div>
-        </div>
+        {/*<div className="flex items-start">*/}
+        {/*  <div className="flex items-start h-5">*/}
+        {/*    <Checkbox id="terms"*/}
+        {/*              name="terms"*/}
+        {/*              onChange={handleToggle}*/}
+        {/*              required={true}/>*/}
+        {/*    <Label htmlFor="terms" className="ml-3">*/}
+        {/*      I accept the*/}
+        {/*      <Link href="/terms" className="font-medium text-primary-600 hover:underline dark:text-primary-500 ml-1">*/}
+        {/*        Terms and Conditions*/}
+        {/*      </Link>*/}
+        {/*    </Label>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
         <button type="submit"
                 className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
           Create an account
