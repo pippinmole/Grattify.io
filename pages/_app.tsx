@@ -3,7 +3,7 @@ import "./styles.css"
 import type { AppProps } from "next/app"
 import {ThemeProvider} from "next-themes";
 import {NextPage} from "next";
-import React, {ReactElement, ReactNode, useState} from "react";
+import React, {ReactElement, ReactNode, useEffect, useState} from "react";
 import NextNProgress from 'nextjs-progressbar';
 import {createBrowserSupabaseClient} from "@supabase/auth-helpers-nextjs";
 import {SessionContextProvider, Session} from "@supabase/auth-helpers-react";
