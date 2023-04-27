@@ -21,3 +21,5 @@ next-env.d.ts
 
 # Add all files under the folder supabase/
 supabase/
+# Sentry Auth Token
+.sentryclirc
