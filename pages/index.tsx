@@ -32,13 +32,8 @@ export default function IndexPage() {
       .then(r => setPost(r as PostResponse))
   },[session])
 
-  const testError = () => {
-    throw new Error("This is a test error 1234")
-  }
-
   return (
     <>
-      <button onClick={() => testError()}>Test Error</button>
       {post?.data ? <ExistingPost post={post}/> : <CreatePost/>}
 
       <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"/>
