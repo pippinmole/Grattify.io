@@ -4,7 +4,8 @@ import {supabase} from "./supabaseClient";
 import {Database} from "../models/schema";
 import {IPostForm} from "../components/index/CreatePost";
 import {useEffect, useState} from "react";
-import {getPreferences, PreferencesResponse, ProfileResponse} from "../models/types";
+import {getPreferences, PostResponseSuccess, PreferencesResponse, ProfileResponse} from "../models/types";
+import {User} from "@supabase/gotrue-js";
 
 export async function getProfile(
   supabase: SupabaseClient<Database>,
@@ -39,7 +40,7 @@ export async function getTodaysPost(
 
   return supabase
     .from('posts')
-    .select("*, author:author_id (*)")
+    .select("*, author:author_id (*), likes:post_likes(*)")
     .eq('author_id', session.user.id)
     .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
     .limit(1)
@@ -51,7 +52,7 @@ export async function getAllPosts<T>(
 ) {
   return supabase
     .from('posts')
-    .select(`*, author:author_id (*)`)
+    .select(`*, author:author_id (*), likes:post_likes(*)`)
 }
 
 export async function getAllPostsForSession(
@@ -61,14 +62,43 @@ export async function getAllPostsForSession(
   return getAllPostsForUserId(supabase, session?.user.id);
 }
 
+export async function getPostById(
+  supabase: SupabaseClient<Database>,
+  id: string
+) {
+  return supabase
+    .from('posts')
+    .select(`*, author:author_id (*), likes:post_likes(*)`)
+    .eq('id', id)
+    .limit(1)
+    .maybeSingle()
+    .throwOnError()
+}
+
 export async function getAllPostsForUserId(
   supabase: SupabaseClient<Database>,
   id: string
 ) {
   return supabase
     .from('posts')
-    .select(`*, author:author_id (*)`)
+    .select(`*, author:author_id (*), likes:post_likes(*)`)
     .eq('author_id', id)
+}
+
+export async function likePost(
+  supabase: SupabaseClient<Database>,
+  user: User | null,
+  post: PostResponseSuccess,
+) {
+  return supabase
+    .from('post_likes')
+    .insert({
+      post_id: post.id,
+      user_id: user?.id,
+    })
+    .select()
+    .limit(1)
+    .maybeSingle()
 }
 
 export async function createPost(

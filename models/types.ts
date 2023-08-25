@@ -19,6 +19,14 @@ export function getPosts(
     .select('*')
 }
 
+export function getLikes(
+  supabase: SupabaseClient<Database>,
+) {
+  return supabase
+    .from('post_likes')
+    .select('*')
+}
+
 export async function getProfile(
   supabase: SupabaseClient<Database>,
   session: Session
@@ -43,12 +51,15 @@ export async function getPreferences(
 
 export type PostResponse = Awaited<ReturnType<typeof getPost>>
 export type PostResponseSuccess = PostResponse["data"] & {
-  author: Profiles
+  author: Profiles,
+  likes: Likes[]
 }
 export type PostResponseArray = Awaited<ReturnType<typeof getPosts>>
 
 export type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 export type ProfileResponse = Awaited<ReturnType<typeof getProfile>>
+
+export type Likes = Database["public"]["Tables"]["post_likes"]["Row"];
 
 export type Preferences = Database["public"]["Tables"]["preferences"]["Row"];
 export type PreferencesResponse = Awaited<ReturnType<typeof getPreferences>>

@@ -1,21 +1,34 @@
-import { GetServerSideProps } from 'next';
 import Layout from "../../components/layout";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Carousel, Dropdown, Modal} from "flowbite-react";
 import Image from "next/image";
 import UserProfile from "../../components/user/UserProfile";
-import {supabase} from "../../lib/supabaseClient";
 import {PostResponseSuccess} from "../../models/types";
 import {User} from "@supabase/gotrue-js";
 import {useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
 import {useRouter} from "next/router";
 import {toast} from "react-toast";
 import {HiOutlineExclamationCircle} from "react-icons/hi2";
+import {getPostById, likePost} from "../../lib/supabaseUtils";
+import {Database} from "../../models/schema";
 
-PostPage.title = "Post"
-function PostPage({ post }: { post: PostResponseSuccess }) {
+function PostPage() {
+  const router = useRouter()
+  const supabaseClient = useSupabaseClient<Database>()
+  const {id} = router.query;
+
+  const [post, setPost] = useState<PostResponseSuccess | undefined | null>()
+
+  useEffect(() => {
+    if(!router.isReady) return;
+
+    getPostById(supabaseClient, id as string)
+      .then(r => setPost(r.data as PostResponseSuccess))
+      .catch(e => router.push('/'))
+  }, [id, router.isReady])
+
   const user = useUser()
-  const controlValue = post?.images.length > 1
+  const controlValue = post?.images && post?.images.length > 1
     ? ""
     : " "
 
@@ -31,7 +44,7 @@ function PostPage({ post }: { post: PostResponseSuccess }) {
         </div>
 
         <div className="flex">
-          <PostOptionsDropdown post={post} user={user}/>
+          <PostActions post={post} user={user}/>
         </div>
       </div>
 
@@ -65,7 +78,7 @@ function PostPage({ post }: { post: PostResponseSuccess }) {
   )
 }
 
-function PostOptionsDropdown({post, user}: {post: PostResponseSuccess, user: User | null}) {
+function PostActions({post, user}: {post: PostResponseSuccess, user: User | null}) {
 
   const router = useRouter()
   const supabaseClient = useSupabaseClient()
@@ -88,62 +101,87 @@ function PostOptionsDropdown({post, user}: {post: PostResponseSuccess, user: Use
 
   const isOwner = user?.id == post.author_id
 
-  if(!isOwner) {
-    return <></>
-  }
-
   return (
     <>
-      <Modal
-        show={isOpen}
-        size="md"
-        popup={true}
-        onClose={() => setIsOpen(false)}
-      >
-        <Modal.Header/>
-        <Modal.Body>
-          <div className="text-center">
-            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-            <h3 className="text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete this post?
-            </h3>
+      <LikeButton post={post} />
 
-            <p className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
-              This cannot be undone.
-            </p>
-            <div className="flex justify-center gap-4">
-              <Button
-                color="failure"
-                onClick={deletePost}
-              >
-                Yes, I'm sure
-              </Button>
-              <Button
-                color="gray"
-                onClick={() => setIsOpen(false)}
-              >
-                No, cancel
-              </Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
+      {isOwner && (
+        <>
+          <Modal
+            show={isOpen}
+            size="md"
+            popup={true}
+            onClose={() => setIsOpen(false)}
+          >
+            <Modal.Header/>
+            <Modal.Body>
+              <div className="text-center">
+                <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                <h3 className="text-lg font-normal text-gray-500 dark:text-gray-400">
+                  Are you sure you want to delete this post?
+                </h3>
 
-      <Dropdown size="xs" label={<Ellipsis/>} arrowIcon={false} color={"gray"} className="bg-white dark:bg-gray-800">
-        <Dropdown.Item>
-          Something else
-        </Dropdown.Item>
+                <p className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
+                  This cannot be undone.
+                </p>
+                <div className="flex justify-center gap-4">
+                  <Button
+                    color="failure"
+                    onClick={deletePost}
+                  >
+                    Yes, I'm sure
+                  </Button>
+                  <Button
+                    color="gray"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    No, cancel
+                  </Button>
+                </div>
+              </div>
+            </Modal.Body>
+          </Modal>
 
-        {isOwner && (
-          <>
-            <Dropdown.Divider/>
-            <Dropdown.Item className="!text-red-500" onClick={() => setIsOpen(true)}>
-              Delete Post
+          <Dropdown size="xs" label={<Ellipsis/>} arrowIcon={false} color={"gray"} className="bg-white dark:bg-gray-800">
+            <Dropdown.Item>
+              Something else
             </Dropdown.Item>
-          </>
-        )}
-      </Dropdown>
+
+            {isOwner && (
+              <>
+                <Dropdown.Divider/>
+                <Dropdown.Item className="!text-red-500" onClick={() => setIsOpen(true)}>
+                  Delete Post
+                </Dropdown.Item>
+              </>
+            )}
+          </Dropdown>
+        </>
+      )}
     </>
+  )
+}
+
+function LikeButton({post}: {post: PostResponseSuccess}) {
+  const router = useRouter()
+  const supabaseClient = useSupabaseClient()
+  const user = useUser()
+
+  const [isLiked, setIsLiked] = useState(post.likes.some(l => l.user_id == user?.id))
+
+  return (
+    <button className="bg-gray-200 hover:bg-gray-300 rounded-full px-3 py-2 text-sm font-semibold text-gray-700"
+            onClick={() => {
+              likePost(supabaseClient, user, post)
+                .then(r => {router.reload()})}
+            }>
+      <svg xmlns="http://www.w3.org/2000/svg" className="inline-block h-4 w-4 mr-1 -mt-1 text-red-500 fill-current"
+           viewBox="0 0 20 20">
+        <path
+          d="M10 18.2l-1.6-1.5C4.5 12.5 2 9.5 2 6.5 2 4.5 3.5 3 5.5 3c1.4 0 2.6.8 3.5 1.8C10.9 3.8 12.1 3 13.5 3c2 0 3.5 1.5 3.5 3.5 0 3-2.5 6-6.4 10.2L10 18.2z"/>
+      </svg>
+      {post.likes?.length + (isLiked ? 1 : 0)}
+    </button>
   )
 }
 
@@ -155,26 +193,9 @@ const Ellipsis = () => (
   </svg>
 );
 
+PostPage.title = "Post"
 PostPage.getLayout = function getLayout(page: React.ReactNode) {
     return <Layout>{page}</Layout>
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const {id} = context.query;
-
-  const {data} = await supabase
-    .from('posts')
-    .select("*, author:author_id (*)")
-    .eq('id', id)
-    .maybeSingle()
-    .throwOnError()
-
-  return {
-    props: {
-      post: data
-    },
-  };
-}
-
 
 export default PostPage;

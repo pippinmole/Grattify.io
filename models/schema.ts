@@ -9,6 +9,26 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      post_likes: {
+        Row: {
+          created_at: string | null
+          id: number
+          post_id: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          post_id?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          post_id?: number | null
+          user_id?: string | null
+        }
+      }
       posts: {
         Row: {
           author_id: string | null
@@ -80,7 +100,14 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      continents:
+        | "Africa"
+        | "Antarctica"
+        | "Asia"
+        | "Europe"
+        | "Oceania"
+        | "North America"
+        | "South America"
     }
     CompositeTypes: {
       [_ in never]: never
