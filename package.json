@@ -10,7 +10,7 @@
   },
   "author": "Jonathan Ruffles <jonathan.ruffles03@gmail.com>",
   "dependencies": {
-    "@next/bundle-analyzer": "^13.4.19",
+    "@next/bundle-analyzer": "^15.0.0",
     "@sentry/nextjs": "^7.64.0",
     "@supabase/auth-helpers-nextjs": "^0.6.1",
     "@supabase/auth-helpers-react": "^0.3.1",
